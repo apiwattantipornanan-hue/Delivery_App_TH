@@ -1,347 +1,361 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Customer UI Directions Demo</title>
-  <link rel="stylesheet" href="customer-ui-demo.css" />
-</head>
-<body>
-  <header class="demo-hero">
-    <div class="demo-hero__eyebrow">Customer UI/UX Moodboard Demo</div>
-    <h1>3 แนวทางหน้าลูกค้า สำหรับร้านปอเปี๊ยะสด</h1>
-    <p>
-      แต่ละแบบเป็นคนละ direction จริง: โทนสี ฟอนต์ บรรยากาศ และ hero visual ต่างกัน
-      แต่ยังคง practical, delicious, และพร้อมนำไปใช้เป็น demo ต่อได้
-    </p>
-  </header>
+# Delivery Application Brainstorm
 
-  <main class="directions">
-    <section class="direction direction--garden" data-pattern="garden" data-price="50">
-      <div class="direction__intro">
-        <div>
-          <span class="direction__number">Pattern 01</span>
-          <h2>สวนครัวอบอุ่น</h2>
-          <p>
-            อารมณ์ร้านอาหารบ้าน ๆ ที่สะอาด นุ่ม และจริงใจ ให้ภาพอาหารเป็นพระเอก
-            เหมาะกับร้านเล็กที่อยากดูน่าเชื่อถือโดยไม่หรูเกินไป
-          </p>
-        </div>
-        <div class="palette-card palette-card--fresh">
-          <h3>Color Palette</h3>
-          <div class="palette-list">
-            <span>
-              <i style="--swatch: #06c755"></i>
-              <strong>LINE Green</strong>
-              <small>#06C755</small>
-            </span>
-            <span>
-              <i style="--swatch: #e8f7e9"></i>
-              <strong>Soft Lime</strong>
-              <small>#E8F7E9</small>
-            </span>
-            <span>
-              <i style="--swatch: #fff4c2"></i>
-              <strong>Warm Yellow</strong>
-              <small>#FFF4C2</small>
-            </span>
-            <span>
-              <i style="--swatch: #f7f8f6"></i>
-              <strong>Rice Paper</strong>
-              <small>#F7F8F6</small>
-            </span>
-            <span>
-              <i style="--swatch: #8b8f94"></i>
-              <strong>Warm Gray</strong>
-              <small>#8B8F94</small>
-            </span>
-          </div>
-        </div>
-      </div>
+## Business Context
 
-      <div class="direction__notes direction__notes--fresh">
-        <span>Typography: Friendly · Clear · Modern</span>
-        <span>อ่านง่าย อบอุ่น เป็นมิตร</span>
-        <span>Atmosphere: สดใหม่ น่ากิน ใช้งานง่าย เร็ว</span>
-        <span>Hero: Fresh & Tasty product tile</span>
-      </div>
+Food shop in Thailand selling fresh spring rolls starting around 50 THB.
 
-      <div class="fresh-board">
-        <div class="fresh-typo-card">
-          <span>Aa</span>
-          <div>
-            <strong>Friendly · Clear · Modern</strong>
-            <small>อ่านง่าย อบอุ่น เป็นมิตร</small>
-          </div>
-        </div>
-        <div class="fresh-atmosphere-card">
-          <h3>UI Atmosphere</h3>
-          <p><b>สดใหม่ น่ากิน</b><small>Fresh & Delicious</small></p>
-          <p><b>ใช้งานง่าย เร็ว</b><small>Simple & Fast</small></p>
-          <p><b>อบอุ่น เป็นกันเอง</b><small>Warm & Friendly</small></p>
-          <p><b>LINE เข้าใจง่าย</b><small>LINE-native feel</small></p>
-        </div>
-        <div class="fresh-hero-card">
-          <img src="Moodboard_Directions/ai_food_demo/fresh_roll_ai_clean.png" alt="Fresh and tasty hero visual" />
-          <strong>Fresh<br />&amp; Tasty!</strong>
-        </div>
-      </div>
+Main business concern:
 
-      <div class="screens">
-        <article class="phone garden-phone">
-          <div class="phone__bar"></div>
-          <div class="garden-shell">
-            <div class="garden-top">
-              <span>สดใหม่วันนี้</span>
-              <strong>ปอเปี๊ยะโฮมเมด</strong>
-            </div>
-            <div class="garden-hero garden-hero--shop">
-              <img data-garden-hero src="Moodboard_Directions/ai_food_demo/fresh_roll_ai_clean.png" alt="ปอเปี๊ยะสดไส้รวม" />
-              <div class="garden-blob garden-blob--one"></div>
-              <div class="garden-blob garden-blob--two"></div>
-            </div>
-            <div class="product-card product-card--garden">
-              <div>
-                <p class="product-card__label" data-garden-label>เมนูแนะนำ</p>
-                <h3 data-garden-title>ปอเปี๊ยะสดไส้รวม</h3>
-                <p data-garden-desc>เต้าหู้ กุนเชียง ผักสด และน้ำจิ้มถั่วรสกลมกล่อม</p>
-              </div>
-              <div class="price-pill" data-garden-price>฿50</div>
-            </div>
+- Avoid GrabFood / LINE MAN marketplace GP because commission forces the selling price too high.
+- Keep food price attractive from the customer perspective.
+- Build a direct ordering and delivery flow connecting customer, shop, and rider.
+- Start with low capital and grow step by step.
 
-            <div class="product-slider">
-              <div class="section-heading">
-                <span>เลือกเมนูเพิ่ม</span>
-                <small>เลื่อนดูได้</small>
-              </div>
-              <div class="product-track" aria-label="เมนูสินค้า">
-                <button class="mini-product is-active" type="button" data-product-card data-product-id="roll">
-                  <img src="Moodboard_Directions/ai_food_demo/fresh_roll_ai_clean.png" alt="ปอเปี๊ยะสดไส้รวม" />
-                  <strong>ปอเปี๊ยะสด</strong>
-                  <span>฿50</span>
-                  <em data-card-qty="roll">1</em>
-                </button>
-                <button class="mini-product" type="button" data-product-card data-product-id="tofu">
-                  <img src="Moodboard_Directions/ai_food_demo/tofu_ai_clean.png" alt="เต้าหู้" />
-                  <strong>เต้าหู้</strong>
-                  <span>฿25</span>
-                  <em data-card-qty="tofu">0</em>
-                </button>
-                <button class="mini-product" type="button" data-product-card data-product-id="sausage">
-                  <img src="Moodboard_Directions/ai_food_demo/chinese_sausage_ai_extra_dry.png" alt="กุนเชียง" />
-                  <strong>กุนเชียง</strong>
-                  <span>฿35</span>
-                  <em data-card-qty="sausage">0</em>
-                </button>
-              </div>
-            </div>
+## Core Strategy
 
-            <div class="quantity-row">
-              <span data-garden-qty-label>จำนวนปอเปี๊ยะสด</span>
-              <div class="stepper">
-                <button type="button" data-garden-action="minus" aria-label="ลดจำนวน">−</button>
-                <strong data-garden-current-quantity>1</strong>
-                <button type="button" data-garden-action="plus" aria-label="เพิ่มจำนวน">+</button>
-              </div>
-            </div>
+Do not build "another Grab" first.
 
-            <div class="cart-summary">
-              <div>
-                <span>ตะกร้าของคุณ</span>
-                <strong data-garden-cart-count>1 รายการ</strong>
-              </div>
-              <p data-garden-cart-lines>ปอเปี๊ยะสด x1</p>
-            </div>
+Build a direct-ordering system for the shop:
 
-            <button class="main-cta sticky-cta" type="button">ชำระเงิน <span data-garden-total>฿50</span></button>
-          </div>
-        </article>
+1. Customer orders directly from our app or LINE entry point.
+2. Shop receives and confirms order.
+3. Customer pays by PromptPay QR.
+4. Shop assigns rider manually at first.
+5. Rider uses LINE or rider PWA link.
+6. Customer can see order status and, later, rider tracking.
 
-        <article class="phone garden-phone payment-phone">
-          <div class="phone__bar"></div>
-          <div class="payment-shell payment-shell--garden">
-            <span class="payment-badge">PromptPay</span>
-            <h3>ชำระเงิน</h3>
-            <p>สแกน QR ด้วยแอปธนาคาร หรือดาวน์โหลด QR เพื่อไปสแกนต่อ</p>
-            <strong class="payment-total" data-garden-total>฿50</strong>
-            <div class="payment-mini-summary">
-              <span>รายการ</span>
-              <p data-garden-payment-lines>ปอเปี๊ยะสด x1</p>
-            </div>
-            <div class="qr-card qr-card--garden" aria-label="QR Code mockup">
-              <div class="qr-grid"></div>
-            </div>
-            <button class="download-btn" type="button">ดาวน์โหลด QR Code</button>
-            <button class="upload-btn" type="button">อัปโหลดสลิปโอนเงิน</button>
-            <small>ร้านจะยืนยันคำสั่งซื้อหลังตรวจสอบสลิป</small>
-          </div>
-        </article>
-      </div>
-    </section>
+Recommended first architecture:
 
-    <section class="direction direction--market" data-pattern="market" data-price="50">
-      <div class="direction__intro">
-        <div>
-          <span class="direction__number">Pattern 02</span>
-          <h2>ตลาดเช้าคลีน</h2>
-          <p>
-            สดใสกว่าแบบแรก เหมาะกับอนาคตที่มีหลายสินค้า ให้ความรู้สึกเลือกง่าย
-            คล้ายร้านอาหารใน LINE ที่เร็ว เป็นมิตร และเห็นรายการชัด
-          </p>
-        </div>
-        <div class="moodboard">
-          <span style="--swatch: #f9f5df"></span>
-          <span style="--swatch: #ffb25b"></span>
-          <span style="--swatch: #58a681"></span>
-          <span style="--swatch: #d94f38"></span>
-        </div>
-      </div>
+```text
+LINE Official Account Free Plan
+  -> Order Now button
+  -> Shop PWA / Web App
+  -> Firebase backend/database
+  -> PromptPay QR payment
+  -> Admin order screen
+  -> Rider PWA link or LINE live location
+```
 
-      <div class="direction__notes">
-        <span>Typography: สดใส เป็นกันเอง</span>
-        <span>Atmosphere: ตลาดเช้าสะอาด เลือกเร็ว</span>
-        <span>Hero: ถาดสินค้าแบบ horizontal tile</span>
-      </div>
+## Rider Strategy
 
-      <div class="screens">
-        <article class="phone market-phone">
-          <div class="phone__bar"></div>
-          <div class="market-shell">
-            <div class="market-header">
-              <div>
-                <span>เปิดรับออเดอร์</span>
-                <h3>เลือกชุดอร่อย</h3>
-              </div>
-              <div class="market-cart">1</div>
-            </div>
-            <div class="market-strip">
-              <div class="market-tile market-tile--big">
-                <img src="Moodboard_Directions/ai_food_demo/fresh_roll_ai_clean.png" alt="ปอเปี๊ยะสดไส้รวม" />
-                <strong>ปอเปี๊ยะสด</strong>
-              </div>
-              <div class="market-tile">
-                <img src="Moodboard_Directions/ai_food_demo/tofu_ai_clean.png" alt="เต้าหู้" />
-                <strong>เต้าหู้</strong>
-              </div>
-              <div class="market-tile">
-                <img src="Moodboard_Directions/ai_food_demo/chinese_sausage_ai_extra_dry.png" alt="กุนเชียง" />
-                <strong>กุนเชียง</strong>
-              </div>
-            </div>
-            <div class="ticket-card">
-              <span class="ticket-card__tag">ขายดีวันนี้</span>
-              <h3>ปอเปี๊ยะสดไส้รวม</h3>
-              <p>น้ำจิ้มถั่วโฮมเมด แยกน้ำจิ้มให้ พร้อมทาน</p>
-              <div class="ticket-card__meta">
-                <strong>฿50 / ชุด</strong>
-                <div class="stepper">
-                  <button type="button" data-action="minus" aria-label="ลดจำนวน">−</button>
-                  <strong data-quantity>1</strong>
-                  <button type="button" data-action="plus" aria-label="เพิ่มจำนวน">+</button>
-                </div>
-              </div>
-            </div>
-            <button class="main-cta main-cta--market" type="button">ไปชำระเงิน <span data-total>฿50</span></button>
-          </div>
-        </article>
+Phase 1 should not require every rider to install a native app.
 
-        <article class="phone market-phone payment-phone">
-          <div class="phone__bar"></div>
-          <div class="market-payment">
-            <div class="receipt-head">
-              <span>สรุปยอด</span>
-              <strong data-total>฿50</strong>
-            </div>
-            <div class="receipt-line">
-              <span>ปอเปี๊ยะสดไส้รวม</span>
-              <span><span data-quantity>1</span> ชุด</span>
-            </div>
-            <div class="qr-card qr-card--market" aria-label="QR Code mockup">
-              <div class="qr-grid"></div>
-            </div>
-            <p>สแกนจ่ายผ่าน PromptPay แล้วแนบสลิปเพื่อให้ร้านยืนยัน</p>
-            <button class="download-btn download-btn--market" type="button">ดาวน์โหลด QR</button>
-            <button class="upload-btn upload-btn--market" type="button">แนบสลิป</button>
-          </div>
-        </article>
-      </div>
-    </section>
+Recommended rider options:
 
-    <section class="direction direction--calm" data-pattern="calm" data-price="50">
-      <div class="direction__intro">
-        <div>
-          <span class="direction__number">Pattern 03</span>
-          <h2>มินิมอลพร้อมส่ง</h2>
-          <p>
-            เรียบกว่าแต่ไม่เย็นชา ใช้ภาพใหญ่และพื้นที่ว่างเพื่อให้ดู premium เล็กน้อย
-            เหมาะกับ demo ที่อยากให้ดู modern และพร้อมต่อยอดเป็น PWA จริง
-          </p>
-        </div>
-        <div class="moodboard">
-          <span style="--swatch: #fbf3ea"></span>
-          <span style="--swatch: #d8794a"></span>
-          <span style="--swatch: #395c48"></span>
-          <span style="--swatch: #21170f"></span>
-        </div>
-      </div>
+1. LINE manual tracking
+   - Rider shares live location in LINE.
+   - Cheapest and easiest.
+   - Good for early pilot.
 
-      <div class="direction__notes">
-        <span>Typography: Modern Thai, น้ำหนักชัด</span>
-        <span>Atmosphere: สงบ สะอาด พร้อมใช้</span>
-        <span>Hero: ภาพ crop ใหญ่แบบ editorial</span>
-      </div>
+2. Rider PWA link
+   - Rider opens a link such as `/rider/order/12345`.
+   - Rider accepts job, starts pickup, starts delivery, and shares GPS.
+   - No App Store / Play Store install required.
+   - Browser asks permission for GPS.
+   - Works best while browser page is open.
 
-      <div class="screens">
-        <article class="phone calm-phone">
-          <div class="phone__bar"></div>
-          <div class="calm-shell">
-            <div class="calm-hero">
-              <img src="Moodboard_Directions/ai_food_demo/fresh_roll_ai_clean.png" alt="ปอเปี๊ยะสดไส้รวม" />
-              <div class="calm-hero__copy">
-                <span>พร้อมส่งวันนี้</span>
-                <h3>ปอเปี๊ยะสดไส้รวม</h3>
-              </div>
-            </div>
-            <div class="calm-content">
-              <p>ชุดอิ่มพอดี สด สะอาด พร้อมน้ำจิ้มถั่วโฮมเมด</p>
-              <div class="calm-details">
-                <span>฿50 / ชุด</span>
-                <span>ทำสดเป็นรอบ</span>
-              </div>
-              <div class="calm-order">
-                <div>
-                  <span>จำนวน</span>
-                  <div class="stepper stepper--calm">
-                    <button type="button" data-action="minus" aria-label="ลดจำนวน">−</button>
-                    <strong data-quantity>1</strong>
-                    <button type="button" data-action="plus" aria-label="เพิ่มจำนวน">+</button>
-                  </div>
-                </div>
-                <button class="main-cta main-cta--calm" type="button">สั่งเลย <span data-total>฿50</span></button>
-              </div>
-            </div>
-          </div>
-        </article>
+3. Native rider app
+   - Best for reliable background GPS and push notifications.
+   - More expensive and should come later.
 
-        <article class="phone calm-phone payment-phone">
-          <div class="phone__bar"></div>
-          <div class="calm-payment">
-            <span class="payment-badge payment-badge--calm">PromptPay QR</span>
-            <h3>ยอดชำระ <strong data-total>฿50</strong></h3>
-            <div class="qr-card qr-card--calm" aria-label="QR Code mockup">
-              <div class="qr-grid"></div>
-            </div>
-            <div class="calm-payment__actions">
-              <button class="download-btn download-btn--calm" type="button">ดาวน์โหลด QR</button>
-              <button class="upload-btn upload-btn--calm" type="button">อัปโหลดสลิป</button>
-            </div>
-            <p>หลังร้านตรวจสอบสลิปแล้ว ระบบจะแจ้งสถานะคำสั่งซื้อ</p>
-          </div>
-        </article>
-      </div>
-    </section>
-  </main>
+Suggested MVP rider flow:
 
-  <script src="customer-ui-demo.js"></script>
-</body>
-</html>
+```text
+Admin assigns order
+  -> Rider receives LINE message with job link
+  -> Rider opens PWA
+  -> Accept job
+  -> Start pickup
+  -> Start delivery
+  -> Share GPS while active
+  -> Mark delivered
+```
+
+External backup rider services can be considered later:
+
+- Lalamove API
+- SKOOTAR API / web booking
+- Other local motorcycle courier options
+
+Use these as backup logistics, not as food marketplace platforms.
+
+## Payment Strategy
+
+Phase 1: PromptPay QR with manual verification.
+
+Example:
+
+```text
+Customer buys 2 boxes
+Food total = 100 THB
+App generates PromptPay QR for 100 THB
+Customer scans with Thai bank app
+Customer uploads payment slip
+Shop checks payment
+Order confirmed
+```
+
+Risk reduction:
+
+- Use exact amount per order.
+- Optionally use small unique satang amount, for example 100.03 THB for order #003.
+- QR expires after 10-15 minutes.
+- Payment status stays pending until confirmed.
+
+Phase 2: PromptPay payment API.
+
+Possible providers to compare:
+
+- Opn / Omise
+- 2C2P
+- Xendit
+- Thai bank direct APIs such as SCB, Bangkok Bank, Kasikorn, etc.
+
+Phase 3: LINE Pay only if useful.
+
+LINE Pay exists in Thailand, but merchant onboarding and MDR fees may apply. For low capital, PromptPay QR is probably better as the first payment path.
+
+## LINE Strategy
+
+Use LINE because Thai customers and riders are familiar with it.
+
+Recommended first setup:
+
+- LINE Official Account free plan.
+- Rich menu button: Order Now.
+- The button opens our PWA ordering app.
+- LINE chat is used for support and manual communication.
+- Do not rely on heavy automated broadcasts at the beginning.
+
+Known cost notes from current research:
+
+- LINE OA Free plan exists.
+- Basic and Pro paid plans exist for higher message volume.
+- Verified account is optional and has a one-time fee.
+- Messaging API usage depends on LINE OA message allowance.
+
+LINE is the customer entry and communication layer.
+Our app still owns order data, payment status, rider assignment, and tracking.
+
+## Firebase Backend
+
+Firebase is owned by Google and can act as our backend/database without running our own server.
+
+Firebase can store:
+
+- Menu items
+- Prices
+- Customer orders
+- Customer addresses
+- Payment status
+- Rider assignment
+- Rider GPS location
+- Order status history
+
+Recommended Firebase products for MVP:
+
+- Firebase Hosting for web/PWA hosting.
+- Cloud Firestore for database.
+- Firebase Authentication later, but avoid phone OTP at first because SMS verification can cost money.
+
+Low-capital recommendation:
+
+- Start on Firebase Spark free plan.
+- Use simple admin/rider login during prototype.
+- Avoid large image storage costs.
+- Add budget alerts before upgrading to Blaze.
+
+Important:
+
+- Some server-side features, such as payment webhooks and backend automation, may require Blaze pay-as-you-go later.
+- Blaze is not automatically expensive, but it requires careful budget management.
+
+## Gemini / AI Ideas
+
+Gemini can connect with Firebase through Firebase AI Logic and Gemini API.
+
+Important distinction:
+
+- Personal Gemini Pro / Google AI Pro subscription helps the developer personally.
+- App features usually use Gemini API / Firebase AI Logic, which has separate free or paid tiers.
+
+Recommended AI roadmap:
+
+Phase 1:
+
+- Do not add AI to customer app yet.
+- Build the core ordering system first.
+
+Phase 2:
+
+- Use analytics from orders.
+- Track sales by day, time, menu, and area.
+
+Phase 3:
+
+- Add Gemini for admin support.
+- Generate LINE promotion text.
+- Summarize daily sales.
+- Suggest how many boxes to prepare.
+- Analyze customer feedback.
+- Translate menu text Thai / English.
+
+Phase 4:
+
+- Add customer-facing AI only if it creates real value.
+- Food recommendation.
+- FAQ assistant.
+- Healthy / vegetarian / spicy guidance.
+
+Best AI feature idea for the shop:
+
+```text
+"How many spring roll boxes should I prepare today,
+and what promotion should I send on LINE?"
+```
+
+## MVP Feature List
+
+Customer PWA:
+
+- Menu with food photos.
+- Quantity selection.
+- Cart.
+- Delivery address.
+- Delivery fee calculation.
+- PromptPay QR.
+- Payment slip upload.
+- Order status page.
+
+Admin PWA:
+
+- Incoming orders.
+- Payment pending / confirmed.
+- Cooking status.
+- Assign rider.
+- View rider status.
+- Mark delivered.
+
+Rider PWA:
+
+- Job link.
+- Accept order.
+- Pickup location.
+- Customer drop-off location.
+- Customer phone/contact.
+- Start delivery.
+- Share GPS.
+- Mark delivered.
+
+## Current Prototype
+
+Created on 2026-06-04 as the first static MVP prototype.
+
+Updated on 2026-06-06 after review:
+
+- First prototype felt too much like a Power App / internal tool.
+- Customer UI should feel more attractive and food-shop friendly.
+- Admin UI should still be operational, but easier to scan.
+- Real food pictures will be added later from `Ptcture_Food` after the owner confirms the image set is ready.
+- UI direction should be real-photo first. Avoid AI-generated food that changes the product too much.
+- Product moodboard should reference the real food images around 80%, with UI design supporting the photo instead of replacing it.
+
+Files:
+
+- `index.html`
+- `styles.css`
+- `app.js`
+- `README.md`
+
+Current prototype scope:
+
+- Customer menu and cart.
+- Delivery fee selection.
+- PromptPay QR mock screen.
+- Payment slip upload step.
+- Admin order dashboard.
+- Manual payment and order status updates.
+- Rider job selection.
+- Rider status updates.
+- Browser GPS sharing for active rider job.
+- Local data stored in browser `localStorage`.
+
+This prototype is intentionally simple so the product flow can be tested before connecting Firebase, LINE LIFF, and payment APIs.
+
+## Suggested Build Phases
+
+### Phase 1: Manual MVP
+
+- Customer order page.
+- Admin order dashboard.
+- PromptPay QR generation.
+- Manual payment confirmation.
+- Manual rider assignment through LINE.
+- Simple order status.
+
+### Phase 2: Rider PWA Tracking
+
+- Rider job link.
+- GPS permission.
+- Real-time location stored in Firebase.
+- Admin/customer map view.
+
+### Phase 3: Payment Automation
+
+- Connect PromptPay API provider.
+- Use webhook for payment confirmation.
+- Reduce fake-slip risk.
+
+### Phase 4: Better Operations
+
+- Delivery zones.
+- Rider payout report.
+- Customer reorder.
+- LINE rich menu.
+- Order notifications.
+
+### Phase 5: AI Business Brain
+
+- Daily summary.
+- Demand prediction.
+- Promotion generator.
+- Review/customer feedback analysis.
+
+## Product Principle
+
+Keep the 50 THB food attractive.
+
+Do not let technology or platform fees force the food price into 70-80 THB unless the customer clearly receives extra value.
+
+The app should feel:
+
+- Friendly.
+- Fast.
+- Simple like Shopee-style checkout.
+- Thai customer friendly.
+- Low friction for riders.
+- Easy for the shop owner to operate.
+
+## Open Questions
+
+- What is the shop location and first delivery radius?
+- How many orders per day are expected in the first month?
+- Will delivery be only fresh spring rolls or more menu items later?
+- Should customer login be optional at first?
+- Should admin confirm payment manually or use slip upload OCR later?
+- Which payment API provider is best for Thailand small merchant onboarding?
+
+## Reference Links
+
+- Firebase pricing plans: https://firebase.google.com/docs/projects/billing/firebase-pricing-plans
+- Firebase pricing page: https://firebase.google.com/pricing
+- Firebase AI Logic: https://firebase.google.com/products/vertex-ai-in-firebase
+- Firebase AI Logic get started: https://firebase.google.com/docs/vertex-ai/get-started
+- Gemini API billing: https://ai.google.dev/gemini-api/docs/billing
+- LINE Official Account Thailand: https://lineforbusiness.com/th/
+- LINE Developers LIFF: https://developers.line.biz/en/docs/liff/
+- LINE Messaging API pricing: https://developers.line.biz/en/docs/messaging-api/pricing/
+- Opn PromptPay: https://docs.opn.ooo/en/promptpay/thailand
+- 2C2P QR payment: https://developer.2c2p.com/docs/direct-api-method-qr-payment
+- Lalamove Developers: https://developers.lalamove.com/
+- SKOOTAR: https://www.skootar.com/en
