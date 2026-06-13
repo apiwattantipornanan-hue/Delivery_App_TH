@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home Kitchen Fresh Soft Demo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="phone order-screen" aria-label="หน้าสั่งอาหาร">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>●●●  Wi-Fi  ▰</span>
+      </div>
+
+      <div class="owner-note">
+        <div class="home-icon" aria-hidden="true">⌂</div>
+        <div>
+          <h1>จากครัวบ้านเรา</h1>
+          <p>ทำสดเป็นรอบ น้ำจิ้มแยกให้ พร้อมทานค่ะ</p>
+        </div>
+        <span class="heart" aria-hidden="true">♡</span>
+      </div>
+
+      <div class="hero-card">
+        <img id="heroImage" src="../assets/home-kitchen-spring-roll-hero.png" alt="ปอเปี๊ยะสดไส้รวม" />
+        <div class="hero-dots" aria-hidden="true">
+          <span class="active"></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <section class="product-panel">
+        <div class="product-heading">
+          <span class="badge">เมนูวันนี้</span>
+          <div class="price">
+            <strong id="productPrice">฿50</strong>
+            <small>/ ชุด</small>
+          </div>
+        </div>
+
+        <h2 id="productName">ปอเปี๊ยะสดไส้รวม</h2>
+        <p id="productDesc">แป้งนุ่ม เต้าหู้ กุนเชียง และน้ำจิ้มถั่วโฮมเมด</p>
+
+        <div class="product-tabs" aria-label="เลือกสินค้า">
+          <button class="product-tab active" type="button" data-product="roll">
+            <img src="../assets/home-kitchen-spring-roll-hero.png" alt="" />
+            <span>ปอเปี๊ยะสด</span>
+            <small>ขายดี</small>
+          </button>
+          <button class="product-tab" type="button" data-product="tofu">
+            <img src="../Moodboard_Directions/ai_food_demo/tofu_ai_clean.png" alt="" />
+            <span>เต้าหู้</span>
+            <small>ทานคู่กัน</small>
+          </button>
+          <button class="product-tab" type="button" data-product="sausage">
+            <img src="../Moodboard_Directions/ai_food_demo/chinese_sausage_ai_extra_dry.png" alt="" />
+            <span>กุนเชียง</span>
+            <small>เพิ่มรสชาติ</small>
+          </button>
+        </div>
+
+        <div class="quantity-row">
+          <span>จำนวน</span>
+          <div class="stepper" aria-label="จำนวนสินค้า">
+            <button type="button" id="minusBtn" aria-label="ลดจำนวน">−</button>
+            <strong id="quantityValue">1</strong>
+            <button type="button" id="plusBtn" aria-label="เพิ่มจำนวน">+</button>
+          </div>
+          <button class="cart-pill" type="button" id="cartButton">
+            <span>ในตะกร้า</span>
+            <strong id="cartCount">1 รายการ</strong>
+          </button>
+        </div>
+
+        <button class="primary-cta" type="button" id="checkoutButton">
+          <span>เพิ่มในตะกร้า</span>
+          <strong id="checkoutTotal">฿50</strong>
+        </button>
+        <p class="add-feedback" id="addFeedback" aria-live="polite"></p>
+      </section>
+
+      <footer class="trust-row">
+        <span>ทำสดใหม่ทุกวัน</span>
+        <i></i>
+        <span>ใส่ใจทุกออเดอร์</span>
+      </footer>
+    </section>
+
+    <section class="phone basket-screen" aria-label="หน้าสรุปตะกร้า">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>●●●  Wi-Fi  ▰</span>
+      </div>
+
+      <button class="back-button basket-back" type="button" id="basketBackButton" aria-label="กลับไปเมนู">‹</button>
+
+      <header class="basket-header">
+        <span class="eyebrow">ในตะกร้า</span>
+        <h2>สรุปตะกร้าก่อนจ่าย</h2>
+        <p>ตรวจจำนวนและยอดรวมให้เรียบร้อย แล้วค่อยไปสแกน QR ค่ะ</p>
+      </header>
+
+      <section class="basket-card">
+        <div class="basket-list" id="basketList"></div>
+        <div class="empty-basket" id="emptyBasket">
+          <strong>ยังไม่มีสินค้าในตะกร้า</strong>
+          <p>เลือกเมนูและกดเพิ่มในตะกร้าก่อนนะคะ</p>
+        </div>
+
+        <div class="price-breakdown">
+          <div>
+            <span>จำนวนสินค้า</span>
+            <strong id="basketItemCount">0 ชุด</strong>
+          </div>
+          <div>
+            <span>ค่าสินค้ารวม</span>
+            <strong id="basketSubtotal">฿50</strong>
+          </div>
+          <div>
+            <span>แพ็กกล่องพร้อมน้ำจิ้ม</span>
+            <strong>ฟรี</strong>
+          </div>
+          <div class="total-row">
+            <span>ยอดรวม</span>
+            <strong id="basketTotal">฿50</strong>
+          </div>
+        </div>
+
+        <div class="shop-note">
+          <strong>หมายเหตุจากร้าน</strong>
+          <p>ออเดอร์นี้จะทำสดเป็นรอบ น้ำจิ้มแยกให้ และร้านจะยืนยันหลังตรวจสอบสลิปค่ะ</p>
+        </div>
+
+        <button class="primary-cta basket-cta" type="button" id="payButton">
+          <span>ไปชำระเงิน</span>
+          <strong id="basketCtaTotal">฿50</strong>
+        </button>
+      </section>
+
+      <footer class="trust-row basket-trust">
+        <span>เช็กง่ายก่อนจ่าย</span>
+        <i></i>
+        <span>ไม่ให้ยอดผิดพลาด</span>
+      </footer>
+    </section>
+
+    <section class="phone payment-screen" aria-label="หน้าชำระเงิน">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>●●●  Wi-Fi  ▰</span>
+      </div>
+
+      <button class="back-button" type="button" id="paymentBackButton" aria-label="กลับไปตะกร้า">‹</button>
+
+      <header class="payment-header">
+        <h2>ชำระเงิน</h2>
+        <p>ด้วย PromptPay</p>
+        <small>ปลอดภัย มั่นใจได้</small>
+      </header>
+
+      <section class="payment-card">
+        <span class="payment-label">ยอดชำระ</span>
+        <strong class="payment-total" id="paymentTotal">฿50</strong>
+
+        <div class="payment-items" id="paymentItems" aria-label="รายการสั่งซื้อ"></div>
+
+        <div class="qr-label">สแกนเพื่อจ่าย</div>
+        <div class="qr-box" aria-label="QR Code mockup">
+          <div class="qr-pattern"></div>
+          <span>Prompt<br />Pay</span>
+        </div>
+
+        <button class="download-btn" type="button">ดาวน์โหลด QR Code</button>
+        <button class="upload-btn" type="button">อัปโหลดสลิปโอนเงิน</button>
+      </section>
+
+      <footer class="payment-note">
+        ร้านจะยืนยันหลังตรวจสอบสลิป<br />
+        ขอบคุณที่อุดหนุนค่ะ ♡
+      </footer>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
