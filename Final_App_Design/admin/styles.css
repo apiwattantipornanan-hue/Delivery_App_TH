@@ -367,10 +367,8 @@ button {
 }
 
 .payment-status {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+  display: grid;
+  gap: 4px;
   margin-top: 12px;
   border-radius: 13px;
   padding: 10px 11px;
@@ -378,15 +376,17 @@ button {
 
 .payment-status span {
   color: inherit;
-  font-size: 0.7rem;
+  font-size: 0.74rem;
   font-weight: 900;
+  line-height: 1;
   opacity: 0.72;
 }
 
 .payment-status strong {
-  font-size: 0.96rem;
-  line-height: 1;
-  white-space: nowrap;
+  display: block;
+  font-size: 1.04rem;
+  line-height: 1.16;
+  overflow-wrap: anywhere;
 }
 
 .payment-status.manual {
@@ -415,10 +415,8 @@ button {
 }
 
 .prep-status {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+  display: grid;
+  gap: 4px;
   margin-top: 8px;
   border-radius: 13px;
   padding: 10px 11px;
@@ -428,15 +426,17 @@ button {
 
 .prep-status span {
   color: inherit;
-  font-size: 0.7rem;
+  font-size: 0.74rem;
   font-weight: 900;
+  line-height: 1;
   opacity: 0.72;
 }
 
 .prep-status strong {
-  font-size: 0.92rem;
-  line-height: 1;
-  white-space: nowrap;
+  display: block;
+  font-size: 1.02rem;
+  line-height: 1.16;
+  overflow-wrap: anywhere;
 }
 
 .prep-status.preparing {

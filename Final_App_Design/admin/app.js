@@ -34,22 +34,22 @@ function generateSlots() {
 
 function getPaymentBadge(order) {
   if (order.paymentStatus === "paid") {
-    return `<div class="payment-status paid"><span>Payment Status</span><strong>Paid</strong></div>`;
+    return `<div class="payment-status paid"><span>ชำระเงิน</span><strong>ชำระแล้ว</strong></div>`;
   }
 
   if (order.paymentStatus === "verifying") {
-    return `<div class="payment-status verifying"><span>Payment Status</span><strong>Verifying Slip</strong></div>`;
+    return `<div class="payment-status verifying"><span>ชำระเงิน</span><strong>ตรวจสลิป</strong></div>`;
   }
 
   if (order.paymentStatus === "needs_manual_check" || order.paymentStatus === "pending_slip") {
-    return `<div class="payment-status manual"><span>Payment Status</span><strong>Manual Check</strong></div>`;
+    return `<div class="payment-status manual"><span>ชำระเงิน</span><strong>รอตรวจสลิป</strong></div>`;
   }
 
   if (order.paymentStatus === "rejected") {
-    return `<div class="payment-status rejected"><span>Payment Status</span><strong>Rejected</strong></div>`;
+    return `<div class="payment-status rejected"><span>ชำระเงิน</span><strong>สลิปไม่ผ่าน</strong></div>`;
   }
 
-  return `<div class="payment-status qr"><span>Payment Status</span><strong>Awaiting Payment</strong></div>`;
+  return `<div class="payment-status qr"><span>ชำระเงิน</span><strong>รอชำระ</strong></div>`;
 }
 
 function getOrderCardClass(order) {
@@ -83,18 +83,18 @@ function getVerificationLine(order) {
 
 function getFulfillmentStatus(order) {
   if (order.orderStatus === "ready_for_pickup") {
-    return `<div class="prep-status ready"><span>Pickup Status</span><strong>Ready for Pickup</strong></div>`;
+    return `<div class="prep-status ready"><span>รับสินค้า</span><strong>พร้อมรับ</strong></div>`;
   }
 
   if (order.orderStatus === "picked_up") {
-    return `<div class="prep-status completed"><span>Pickup Status</span><strong>Picked Up</strong></div>`;
+    return `<div class="prep-status completed"><span>รับสินค้า</span><strong>รับแล้ว</strong></div>`;
   }
 
   if (order.paymentStatus === "paid" || order.orderStatus === "confirmed") {
-    return `<div class="prep-status preparing"><span>Pickup Status</span><strong>Preparing</strong></div>`;
+    return `<div class="prep-status preparing"><span>รับสินค้า</span><strong>กำลังเตรียม</strong></div>`;
   }
 
-  return `<div class="prep-status waiting"><span>Pickup Status</span><strong>Waiting Payment</strong></div>`;
+  return `<div class="prep-status waiting"><span>รับสินค้า</span><strong>รอชำระ</strong></div>`;
 }
 
 function getOrderActions(order) {
