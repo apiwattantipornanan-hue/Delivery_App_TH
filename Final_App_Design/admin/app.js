@@ -34,22 +34,22 @@ function generateSlots() {
 
 function getPaymentBadge(order) {
   if (order.paymentStatus === "paid") {
-    return `<span class="badge paid">Paid</span>`;
+    return `<div class="payment-status paid"><span>Payment Status</span><strong>Paid</strong></div>`;
   }
 
   if (order.paymentStatus === "verifying") {
-    return `<span class="badge verifying">Verifying</span>`;
+    return `<div class="payment-status verifying"><span>Payment Status</span><strong>Verifying Slip</strong></div>`;
   }
 
   if (order.paymentStatus === "needs_manual_check" || order.paymentStatus === "pending_slip") {
-    return `<span class="badge manual">Manual</span>`;
+    return `<div class="payment-status manual"><span>Payment Status</span><strong>Manual Check</strong></div>`;
   }
 
   if (order.paymentStatus === "rejected") {
-    return `<span class="badge rejected">Rejected</span>`;
+    return `<div class="payment-status rejected"><span>Payment Status</span><strong>Rejected</strong></div>`;
   }
 
-  return `<span class="badge qr">Awaiting Pay</span>`;
+  return `<div class="payment-status qr"><span>Payment Status</span><strong>Awaiting Payment</strong></div>`;
 }
 
 function getOrderCardClass(order) {
@@ -93,8 +93,9 @@ function orderCard(order) {
           <span class="order-id">${order.id}</span>
           <strong class="customer-name">${order.customerName || "ไม่ระบุชื่อ"}</strong>
         </div>
-        ${getPaymentBadge(order)}
       </div>
+
+      ${getPaymentBadge(order)}
 
       <div class="order-meta">
         <div>

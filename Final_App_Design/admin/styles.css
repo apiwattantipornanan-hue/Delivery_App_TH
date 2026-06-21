@@ -366,38 +366,50 @@ button {
   font-weight: 900;
 }
 
-.badge {
-  border-radius: 999px;
-  padding: 6px 9px;
-  font-size: 0.72rem;
+.payment-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  border-radius: 13px;
+  padding: 10px 11px;
+}
+
+.payment-status span {
+  color: inherit;
+  font-size: 0.7rem;
   font-weight: 900;
-  max-width: 98px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  opacity: 0.72;
+}
+
+.payment-status strong {
+  font-size: 0.96rem;
+  line-height: 1;
   white-space: nowrap;
 }
 
-.badge.manual {
+.payment-status.manual {
   background: var(--manual-bg);
   color: var(--manual);
 }
 
-.badge.verifying {
+.payment-status.verifying {
   background: var(--verify-bg);
   color: var(--verify);
 }
 
-.badge.paid {
+.payment-status.paid {
   background: var(--paid-bg);
   color: var(--paid);
 }
 
-.badge.rejected {
+.payment-status.rejected {
   background: var(--danger-bg);
   color: var(--danger);
 }
 
-.badge.qr {
+.payment-status.qr {
   background: #efede8;
   color: var(--muted);
 }
