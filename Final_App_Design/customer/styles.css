@@ -20,6 +20,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -508,6 +512,71 @@ button {
 .order-id span {
   color: var(--gray);
   font-weight: 800;
+}
+
+.customer-status-card {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 13px;
+  border: 1px solid rgba(18, 59, 40, 0.12);
+  border-radius: 18px;
+  padding: 14px;
+  background: #f7fbf2;
+}
+
+.customer-status-card span {
+  color: #647064;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.customer-status-card strong {
+  color: var(--green-dark);
+  font-size: 1.2rem;
+  line-height: 1.2;
+}
+
+.customer-status-card p {
+  margin: 2px 0 0;
+  color: #5d665c;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.customer-status-card a {
+  display: block;
+  margin-top: 8px;
+  border-radius: 14px;
+  padding: 11px 12px;
+  background: var(--green);
+  color: #fff;
+  text-align: center;
+  font-weight: 900;
+}
+
+.customer-status-card.waiting {
+  background: #fff8ea;
+  border-color: rgba(109, 67, 29, 0.14);
+}
+
+.customer-status-card.preparing,
+.customer-status-card.ready,
+.customer-status-card.completed {
+  background: #eef9ea;
+  border-color: rgba(6, 185, 84, 0.22);
+}
+
+.customer-status-card.ready strong {
+  color: var(--green);
+}
+
+.customer-status-card.problem {
+  background: #f7e9e5;
+  border-color: rgba(212, 75, 61, 0.24);
+}
+
+.customer-status-card.problem strong {
+  color: var(--red);
 }
 
 .qr-wrap {

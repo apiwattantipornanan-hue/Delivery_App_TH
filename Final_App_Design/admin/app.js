@@ -81,6 +81,57 @@ function getVerificationLine(order) {
   return `<p class="verification-line">Check: ${provider}${ref}${message}</p>`;
 }
 
+function getFulfillmentStatus(order) {
+  if (order.orderStatus === "ready_for_pickup") {
+    return `<div class="prep-status ready"><span>Pickup Status</span><strong>Ready for Pickup</strong></div>`;
+  }
+
+  if (order.orderStatus === "picked_up") {
+    return `<div class="prep-status completed"><span>Pickup Status</span><strong>Picked Up</strong></div>`;
+  }
+
+  if (order.paymentStatus === "paid" || order.orderStatus === "confirmed") {
+    return `<div class="prep-status preparing"><span>Pickup Status</span><strong>Preparing</strong></div>`;
+  }
+
+  return `<div class="prep-status waiting"><span>Pickup Status</span><strong>Waiting Payment</strong></div>`;
+}
+
+function getOrderActions(order) {
+  if (order.orderStatus === "picked_up") {
+    return `
+      <div class="order-actions one-action">
+        <button class="complete-order" type="button" disabled>Completed</button>
+      </div>
+    `;
+  }
+
+  if (order.orderStatus === "ready_for_pickup") {
+    return `
+      <div class="order-actions">
+        <button class="picked-up" type="button" data-action="picked_up" data-order="${order.id}">Picked Up</button>
+        <button class="cancel-order" type="button" data-action="cancelled" data-order="${order.id}">Cancel</button>
+      </div>
+    `;
+  }
+
+  if (order.paymentStatus === "paid" || order.orderStatus === "confirmed") {
+    return `
+      <div class="order-actions">
+        <button class="ready-pickup" type="button" data-action="ready" data-order="${order.id}">Ready</button>
+        <button class="cancel-order" type="button" data-action="cancelled" data-order="${order.id}">Cancel</button>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="order-actions">
+      <button class="mark-paid" type="button" data-action="paid" data-order="${order.id}">Mark Paid</button>
+      <button class="cancel-order" type="button" data-action="cancelled" data-order="${order.id}">Cancel</button>
+    </div>
+  `;
+}
+
 function orderCard(order) {
   const items = order.items
     .map((item) => `<li>${item.name} x ${item.qty}</li>`)
@@ -96,6 +147,7 @@ function orderCard(order) {
       </div>
 
       ${getPaymentBadge(order)}
+      ${getFulfillmentStatus(order)}
 
       <div class="order-meta">
         <div>
@@ -110,11 +162,7 @@ function orderCard(order) {
 
       <ul class="item-list">${items}</ul>
       ${getVerificationLine(order)}
-
-      <div class="order-actions">
-        <button class="mark-paid" type="button" data-action="paid" data-order="${order.id}">Mark Paid</button>
-        <button class="cancel-order" type="button" data-action="cancelled" data-order="${order.id}">Cancel</button>
-      </div>
+      ${getOrderActions(order)}
     </article>
   `;
 }
@@ -190,6 +238,21 @@ slotColumns.addEventListener("click", async (event) => {
     await store.updateOrder(button.dataset.order, {
       paymentStatus: "paid",
       orderStatus: "confirmed",
+      paidAt: new Date().toISOString(),
+    });
+  }
+
+  if (button.dataset.action === "ready") {
+    await store.updateOrder(button.dataset.order, {
+      orderStatus: "ready_for_pickup",
+      readyAt: new Date().toISOString(),
+    });
+  }
+
+  if (button.dataset.action === "picked_up") {
+    await store.updateOrder(button.dataset.order, {
+      orderStatus: "picked_up",
+      pickedUpAt: new Date().toISOString(),
     });
   }
 

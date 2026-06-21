@@ -60,6 +60,28 @@ Order document example:
 }
 ```
 
+Order status lifecycle:
+
+```text
+new
+confirmed
+ready_for_pickup
+picked_up
+cancelled
+expired
+```
+
+Payment status lifecycle:
+
+```text
+awaiting_payment
+verifying
+needs_manual_check
+paid
+rejected
+expired
+```
+
 Settings document:
 
 ```json
@@ -149,5 +171,8 @@ Fallback mode:
 - Admin sees `Manual Check`.
 - Shop owner checks payment in bank app.
 - Shop owner taps `Mark Paid`.
+- When the food is ready, shop owner taps `Ready`.
+- Customer page updates to `อาหารพร้อมรับแล้ว`.
+- After handoff, shop owner taps `Picked Up`.
 
 This remains available even after API integration, because provider quota, network failures, or unreadable slip images can still happen.

@@ -48,8 +48,22 @@ This folder is isolated from the older demos. It contains:
   - Quantity in boxes.
   - Payment badge: `Awaiting Pay`, `Verifying`, `Manual Check`, `Rejected`, or `Paid`.
 - Admin can mark an order paid.
+- Admin can mark food `Ready` when it is ready for pickup.
+- Admin can mark an order `Picked Up` after the customer receives it.
 - Admin can cancel an order.
 - Admin can turn stock availability on/off.
+
+## Customer Pickup Status
+
+After an order is created, the customer page shows a live status card:
+
+- `รอชำระเงิน`
+- `ร้านกำลังตรวจสอบสลิป`
+- `ชำระแล้ว กำลังเตรียมอาหาร`
+- `อาหารพร้อมรับแล้ว`
+- `รับสินค้าแล้ว`
+
+When the admin taps `Ready`, the customer sees `อาหารพร้อมรับแล้ว` plus a Google Maps button to the pickup location.
 
 ## Dynamic PromptPay QR
 

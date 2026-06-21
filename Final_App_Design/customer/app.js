@@ -1,6 +1,7 @@
 const config = window.APP_CONFIG;
 const store = window.FinalAppStore;
 const baht = (value) => `฿${Number(value).toLocaleString("th-TH", { minimumFractionDigits: value % 1 ? 2 : 0 })}`;
+const LAST_ORDER_ID_KEY = "final-app-last-order-id";
 
 const state = {
   cart: Object.fromEntries(config.products.map((product) => [product.id, product.id === "roll" ? 1 : 0])),
@@ -19,11 +20,18 @@ const checkoutDetail = document.querySelector("#checkoutDetail");
 const createOrderButton = document.querySelector("#createOrderButton");
 const paymentPanel = document.querySelector("#paymentPanel");
 const createdOrderId = document.querySelector("#createdOrderId");
+const customerOrderStatusCard = document.querySelector("#customerOrderStatusCard");
+const customerOrderStatusLabel = document.querySelector("#customerOrderStatusLabel");
+const customerOrderStatusText = document.querySelector("#customerOrderStatusText");
+const customerPickupMap = document.querySelector("#customerPickupMap");
+const qrWrap = document.querySelector(".qr-wrap");
 const qrCanvas = document.querySelector("#promptPayCanvas");
 const qrFallbackImage = document.querySelector("#qrFallbackImage");
 const downloadQrButton = document.querySelector("#downloadQrButton");
+const qrNote = document.querySelector(".qr-note");
 const qrExpiryCard = document.querySelector("#qrExpiryCard");
 const qrExpiryCountdown = document.querySelector("#qrExpiryCountdown");
+const uploadSlipLabel = document.querySelector(".upload-slip");
 const slipInput = document.querySelector("#slipInput");
 const orderStatusMessage = document.querySelector("#orderStatusMessage");
 let expiryTimerId = null;
@@ -34,6 +42,7 @@ document.querySelector("#shopSubtitle").textContent = config.shopSubtitle;
 document.querySelector("#mapsLink").href = config.googleMapsUrl;
 document.querySelector("#deliveryChoice").href = config.deliveryUrl;
 document.querySelector("#deliveryButton").href = config.deliveryUrl;
+customerPickupMap.href = config.googleMapsUrl;
 
 function showScreen(screenId) {
   screens.forEach((screen) => {
@@ -182,18 +191,43 @@ function getPaymentAmount(orderId, baseTotal) {
   return Number((baseTotal + satang).toFixed(2));
 }
 
+function rememberOrder(orderId) {
+  try {
+    localStorage.setItem(LAST_ORDER_ID_KEY, orderId);
+  } catch {
+    // Ignore private-browsing storage failures. Live Firestore still works while the page is open.
+  }
+}
+
+function getRememberedOrderId() {
+  try {
+    return localStorage.getItem(LAST_ORDER_ID_KEY);
+  } catch {
+    return null;
+  }
+}
+
 function getQrExpiresAt(fromDate = new Date()) {
   const minutes = config.qrExpiresInMinutes || 15;
   return new Date(fromDate.getTime() + minutes * 60 * 1000).toISOString();
 }
 
 function getLatestCreatedOrder() {
-  if (!state.createdOrder) return null;
-  return state.orders.find((order) => order.id === state.createdOrder.id) || state.createdOrder;
+  const trackedOrderId = state.createdOrder?.id || getRememberedOrderId();
+  if (!trackedOrderId) return null;
+  return state.orders.find((order) => order.id === trackedOrderId) || state.createdOrder;
 }
 
 function isQrExpired(order) {
   return Boolean(order?.qrExpiresAt && Date.now() >= Date.parse(order.qrExpiresAt));
+}
+
+function isPaymentFinished(order) {
+  return Boolean(
+    order &&
+      (order.paymentStatus === "paid" ||
+        ["confirmed", "ready_for_pickup", "picked_up"].includes(order.orderStatus)),
+  );
 }
 
 function canAutoExpire(order) {
@@ -241,6 +275,13 @@ function renderQrExpiry() {
   if (!order?.qrExpiresAt) return;
 
   state.createdOrder = order;
+
+  if (isPaymentFinished(order)) {
+    qrExpiryCard.hidden = true;
+    downloadQrButton.classList.add("is-disabled");
+    return;
+  }
+
   qrExpiryCard.hidden = false;
 
   const remaining = Date.parse(order.qrExpiresAt) - Date.now();
@@ -263,6 +304,142 @@ function startQrExpiryTimer(order) {
   state.createdOrder = order;
   renderQrExpiry();
   expiryTimerId = window.setInterval(renderQrExpiry, 1000);
+}
+
+function getCustomerOrderStatus(order) {
+  if (!order) {
+    return null;
+  }
+
+  if (order.orderStatus === "ready_for_pickup") {
+    return {
+      className: "ready",
+      label: "อาหารพร้อมรับแล้ว",
+      text: `ออเดอร์รอบ ${order.pickupTime} พร้อมแล้ว มารับที่ร้านได้เลยค่ะ`,
+      showMap: true,
+    };
+  }
+
+  if (order.orderStatus === "picked_up") {
+    return {
+      className: "completed",
+      label: "รับสินค้าแล้ว",
+      text: "ขอบคุณมากค่ะ ขอให้อร่อยนะคะ",
+      showMap: false,
+    };
+  }
+
+  if (order.orderStatus === "cancelled") {
+    return {
+      className: "problem",
+      label: "ออเดอร์ถูกยกเลิก",
+      text: "หากต้องการสั่งใหม่ กรุณาสร้างออเดอร์อีกครั้งค่ะ",
+      showMap: false,
+    };
+  }
+
+  if (order.orderStatus === "expired" || order.paymentStatus === "expired") {
+    return {
+      className: "problem",
+      label: "QR หมดอายุแล้ว",
+      text: "ระบบปล่อยรอบนี้กลับให้ลูกค้าคนอื่น กรุณาสร้างออเดอร์ใหม่ค่ะ",
+      showMap: false,
+    };
+  }
+
+  if (order.paymentStatus === "rejected") {
+    return {
+      className: "problem",
+      label: "สลิปยังไม่ผ่าน",
+      text: "กรุณาติดต่อร้านหรืออัปโหลดสลิปที่ถูกต้องอีกครั้งค่ะ",
+      showMap: false,
+    };
+  }
+
+  if (order.paymentStatus === "paid" || order.orderStatus === "confirmed") {
+    return {
+      className: "preparing",
+      label: "ชำระแล้ว กำลังเตรียมอาหาร",
+      text: "ร้านรับออเดอร์แล้วค่ะ ถ้าอาหารพร้อมเมื่อไร หน้านี้จะอัปเดตเป็นพร้อมรับ",
+      showMap: false,
+    };
+  }
+
+  if (order.paymentStatus === "verifying" || order.paymentStatus === "needs_manual_check") {
+    return {
+      className: "waiting",
+      label: "ร้านกำลังตรวจสอบสลิป",
+      text: "ร้านจะตรวจเงินเข้าในแอปธนาคารก่อนยืนยันออเดอร์ค่ะ",
+      showMap: false,
+    };
+  }
+
+  return {
+    className: "waiting",
+    label: "รอชำระเงิน",
+    text: `กรุณาชำระเงินและอัปโหลดสลิปภายใน ${config.qrExpiresInMinutes || 15} นาที`,
+    showMap: false,
+  };
+}
+
+function renderCustomerOrderStatus() {
+  const order = getLatestCreatedOrder();
+
+  if (!order) {
+    customerOrderStatusCard.hidden = true;
+    qrWrap.hidden = false;
+    qrNote.hidden = false;
+    downloadQrButton.hidden = false;
+    uploadSlipLabel.hidden = false;
+    orderStatusMessage.hidden = false;
+    return;
+  }
+
+  const status = getCustomerOrderStatus(order);
+  const paymentFinished = isPaymentFinished(order);
+
+  customerOrderStatusCard.hidden = false;
+  customerOrderStatusCard.className = `customer-status-card ${status.className}`;
+  customerOrderStatusLabel.textContent = status.label;
+  customerOrderStatusText.textContent = status.text;
+  customerPickupMap.hidden = !status.showMap;
+  qrWrap.hidden = paymentFinished;
+  qrNote.hidden = paymentFinished;
+  downloadQrButton.hidden = paymentFinished;
+  uploadSlipLabel.hidden = paymentFinished;
+  orderStatusMessage.hidden = paymentFinished;
+  slipInput.disabled = paymentFinished;
+}
+
+async function renderPromptPayQr(order) {
+  if (!order?.promptPayPayload) {
+    return;
+  }
+
+  const rendered = await window.PromptPayTools.renderQr(qrCanvas, order.promptPayPayload);
+  if (!rendered) {
+    qrFallbackImage.src = `https://quickchart.io/qr?size=230&text=${encodeURIComponent(order.promptPayPayload)}`;
+    qrFallbackImage.hidden = false;
+  } else {
+    qrFallbackImage.hidden = true;
+  }
+
+  try {
+    downloadQrButton.href = qrCanvas.toDataURL("image/png");
+    downloadQrButton.download = `${order.id}-promptpay.png`;
+  } catch {
+    downloadQrButton.href = `https://quickchart.io/qr?size=600&text=${encodeURIComponent(order.promptPayPayload)}`;
+  }
+}
+
+async function showPaymentPanelForOrder(order) {
+  state.createdOrder = order;
+  paymentPanel.hidden = false;
+  createdOrderId.textContent = order.id;
+  rememberOrder(order.id);
+  renderCustomerOrderStatus();
+  await renderPromptPayQr(order);
+  startQrExpiryTimer(order);
 }
 
 async function verifySlipWithBackend(file, order) {
@@ -418,25 +595,9 @@ async function createPickupOrder() {
   };
 
   await store.createOrder(order);
-  state.createdOrder = order;
-  paymentPanel.hidden = false;
-  createdOrderId.textContent = order.id;
-
-  const rendered = await window.PromptPayTools.renderQr(qrCanvas, promptPayPayload);
-  if (!rendered) {
-    qrFallbackImage.src = `https://quickchart.io/qr?size=230&text=${encodeURIComponent(promptPayPayload)}`;
-    qrFallbackImage.hidden = false;
-  }
-
-  try {
-    downloadQrButton.href = qrCanvas.toDataURL("image/png");
-    downloadQrButton.download = `${order.id}-promptpay.png`;
-  } catch {
-    downloadQrButton.href = `https://quickchart.io/qr?size=600&text=${encodeURIComponent(promptPayPayload)}`;
-  }
+  await showPaymentPanelForOrder(order);
 
   orderStatusMessage.textContent = `สร้าง Dynamic QR แล้ว กรุณาชำระเงินภายใน ${config.qrExpiresInMinutes || 15} นาที`;
-  startQrExpiryTimer(order);
   render();
 }
 
@@ -510,15 +671,25 @@ slipInput.addEventListener("change", async () => {
   await store.updateOrder(latestOrder.id, patch);
   state.createdOrder = { ...latestOrder, ...patch };
   orderStatusMessage.textContent = getCustomerVerificationMessage(result.status, expiredBeforeUpload);
+  renderCustomerOrderStatus();
   renderQrExpiry();
 });
 
 store.subscribeOrders((orders) => {
   state.orders = orders;
-  if (state.createdOrder) {
-    state.createdOrder = orders.find((order) => order.id === state.createdOrder.id) || state.createdOrder;
+
+  const trackedOrderId = state.createdOrder?.id || getRememberedOrderId();
+  if (trackedOrderId) {
+    const trackedOrder = orders.find((order) => order.id === trackedOrderId);
+    if (trackedOrder) {
+      state.createdOrder = trackedOrder;
+      paymentPanel.hidden = false;
+      createdOrderId.textContent = trackedOrder.id;
+    }
   }
+
   render();
+  renderCustomerOrderStatus();
   renderQrExpiry();
 });
 

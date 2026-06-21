@@ -125,6 +125,13 @@
             <strong id="createdOrderId">-</strong>
           </div>
 
+          <section class="customer-status-card" id="customerOrderStatusCard" hidden aria-live="polite">
+            <span>สถานะออเดอร์</span>
+            <strong id="customerOrderStatusLabel">รอชำระเงิน</strong>
+            <p id="customerOrderStatusText">หลังชำระเงิน ร้านจะตรวจสอบและอัปเดตสถานะให้ค่ะ</p>
+            <a id="customerPickupMap" href="#" target="_blank" rel="noreferrer" hidden>เปิดแผนที่ไปรับที่ร้าน</a>
+          </section>
+
           <div class="qr-wrap">
             <canvas id="promptPayCanvas" width="230" height="230" aria-label="Dynamic PromptPay QR"></canvas>
             <img id="qrFallbackImage" alt="Dynamic PromptPay QR fallback" hidden />
