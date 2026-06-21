@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>นายบุ้นหลี | จองปอเปี๊ยะสด</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>●●● Wi-Fi ▰</span>
+      </div>
+
+      <section class="screen is-active" id="entryScreen" aria-label="เลือกวิธีรับสินค้า">
+        <header class="brand-row">
+          <img src="../assets/logo.jpg" alt="นายบุ้นหลี ปอเปี๊ยะสด" />
+          <div>
+            <strong id="shopName">นายบุ้นหลี ปอเปี๊ยะสด</strong>
+            <span id="shopSubtitle">ต้นตำรับกว่า 50 ปี จองง่าย ไม่ต้องโทร</span>
+          </div>
+        </header>
+
+        <div class="hero-card">
+          <img src="../assets/fresh-roll.png" alt="ปอเปี๊ยะสดไส้รวม" />
+        </div>
+
+        <div class="intro-copy">
+          <h1>วันนี้รับแบบไหนดีคะ?</h1>
+          <p>เลือกจองรับที่ร้านตามเวลา หรือสั่งจัดส่งผ่านหน้าสั่งซื้อเดิม</p>
+        </div>
+
+        <div class="choice-list">
+          <button class="choice-card active" type="button" id="pickupChoice">
+            <span class="choice-icon">⌂</span>
+            <span>
+              <strong>รับที่ร้าน</strong>
+              <small>จองรอบรับล่วงหน้า เห็นสถานะว่าง/เต็มชัดเจน</small>
+            </span>
+            <b>แนะนำ</b>
+          </button>
+
+          <a class="choice-card" id="deliveryChoice" href="#">
+            <span class="choice-icon">⇢</span>
+            <span>
+              <strong>จัดส่ง</strong>
+              <small>ไปยังหน้าสั่งซื้อและชำระเงินเดิม</small>
+            </span>
+            <b class="yellow">Delivery</b>
+          </a>
+        </div>
+
+        <section class="map-card">
+          <div class="storefront-photo">
+            <img src="../assets/storefront-map.png" alt="หน้าร้านสำหรับรับสินค้า" />
+            <span>● จุดรับสินค้า</span>
+          </div>
+          <a id="mapsLink" href="#" target="_blank" rel="noreferrer">
+            <span>
+              เปิด Google Maps
+              <small>ดูเส้นทางไปหน้าร้าน</small>
+            </span>
+            <strong>›</strong>
+          </a>
+        </section>
+
+        <button class="primary-btn" type="button" data-next="productScreen">จองรับที่ร้าน</button>
+        <a class="secondary-btn" id="deliveryButton" href="#">สั่งจัดส่ง</a>
+      </section>
+
+      <section class="screen" id="productScreen" aria-label="เลือกสินค้าและจำนวน">
+        <button class="back-btn" type="button" data-back="entryScreen">‹</button>
+        <header class="screen-heading">
+          <span>รับที่ร้าน</span>
+          <h2>เลือกสินค้า</h2>
+          <p>เลือกจำนวนก่อน แล้วค่อยเลือกรอบรับสินค้า</p>
+        </header>
+
+        <div class="product-list" id="productList"></div>
+
+        <section class="summary-card">
+          <span>ยอดรวม</span>
+          <strong id="productTotal">฿0</strong>
+        </section>
+
+        <button class="primary-btn" type="button" id="toCheckoutButton">เลือกรอบรับสินค้า</button>
+      </section>
+
+      <section class="screen" id="checkoutScreen" aria-label="เลือกรอบรับสินค้าและชำระเงิน">
+        <button class="back-btn" type="button" data-back="productScreen">‹</button>
+        <header class="screen-heading compact">
+          <span>รับที่ร้าน</span>
+          <h2>เลือกรอบรับสินค้า</h2>
+          <p>ทุก 30 นาที ตั้งแต่ 09:30 - 15:00</p>
+        </header>
+
+        <div class="slot-grid" id="slotGrid"></div>
+
+        <form class="customer-form" id="customerForm">
+          <label>
+            ชื่อลูกค้า
+            <input id="customerName" type="text" autocomplete="name" placeholder="เช่น คุณเอ" required />
+          </label>
+          <label>
+            เบอร์โทร
+            <input id="customerPhone" type="tel" autocomplete="tel" placeholder="08x-xxx-xxxx" required />
+          </label>
+        </form>
+
+        <section class="summary-card checkout-total">
+          <span>
+            ยอดชำระ
+            <small id="checkoutDetail">เลือกสินค้าและรอบรับ</small>
+          </span>
+          <strong id="checkoutTotal">฿0</strong>
+        </section>
+
+        <button class="primary-btn" type="button" id="createOrderButton">สร้าง Dynamic QR</button>
+
+        <section class="payment-panel" id="paymentPanel" hidden>
+          <div class="order-id">
+            <span>เลขออเดอร์</span>
+            <strong id="createdOrderId">-</strong>
+          </div>
+
+          <div class="qr-wrap">
+            <canvas id="promptPayCanvas" width="230" height="230" aria-label="Dynamic PromptPay QR"></canvas>
+            <img id="qrFallbackImage" alt="Dynamic PromptPay QR fallback" hidden />
+          </div>
+
+          <p class="qr-note">
+            QR นี้สร้างจาก PromptPay ID + ยอดชำระของออเดอร์นี้ ไม่ใช่รูป QR แบบ static
+          </p>
+
+          <div class="expiry-card" id="qrExpiryCard">
+            <span>QR หมดอายุใน</span>
+            <strong id="qrExpiryCountdown">15:00</strong>
+          </div>
+
+          <a class="download-btn" id="downloadQrButton" href="#" download="promptpay-order-qr.png">ดาวน์โหลด QR</a>
+
+          <label class="upload-slip">
+            อัปโหลดสลิปโอนเงิน
+            <input id="slipInput" type="file" accept="image/*" />
+          </label>
+
+          <p class="status-message" id="orderStatusMessage">
+            หลังอัปโหลดสลิป ออเดอร์จะขึ้นที่หน้าแอดมินเป็น Pending Slip เพื่อให้ร้านตรวจสอบ
+          </p>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="../shared/qrcode-generator.js"></script>
+  <script src="../shared/config.js"></script>
+  <script src="../shared/promptpay.js"></script>
+  <script src="../shared/data-store.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

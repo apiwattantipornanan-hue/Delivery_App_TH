@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Queue | นายบุ้นหลี</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="tablet-dashboard">
+    <aside class="control-panel">
+      <section class="brand-card">
+        <img src="../assets/logo.jpg" alt="นายบุ้นหลี" />
+        <div>
+          <span>Kitchen Admin</span>
+          <h1>นายบุ้นหลี</h1>
+          <p>Live pickup queue</p>
+        </div>
+      </section>
+
+      <section class="today-card">
+        <span>วันนี้</span>
+        <strong id="todayLabel">รอบรับที่ร้าน</strong>
+        <small>09:30 - 15:00</small>
+      </section>
+
+      <section class="shop-control">
+        <div>
+          <span>สถานะร้าน</span>
+          <strong id="shopStatusText">เปิดรับออเดอร์</strong>
+          <small>ใช้ปิดระบบเมื่อวัตถุดิบหมด</small>
+        </div>
+        <button class="toggle-btn" type="button" id="stockToggle">เปิด</button>
+      </section>
+
+      <section class="stats-grid">
+        <article>
+          <span>ออเดอร์</span>
+          <strong id="totalOrders">0</strong>
+        </article>
+        <article>
+          <span>รอสลิป</span>
+          <strong id="pendingOrders">0</strong>
+        </article>
+        <article>
+          <span>จ่ายแล้ว</span>
+          <strong id="paidOrders">0</strong>
+        </article>
+        <article>
+          <span>กล่อง</span>
+          <strong id="totalBoxes">0</strong>
+        </article>
+      </section>
+
+      <section class="focus-note">
+        <strong>Kitchen Focus</strong>
+        <p>ดูจากซ้ายไปขวาตามรอบเวลา รอบไหนมีออเดอร์ให้เริ่มเตรียมก่อน</p>
+      </section>
+    </aside>
+
+    <section class="queue-board">
+      <header class="board-header">
+        <div>
+          <span>Live Order Queue</span>
+          <h2>ตารางม้วนปอเปี๊ยะวันนี้</h2>
+          <p>จัดกลุ่มตามรอบรับสินค้า เพื่อให้ครัวรู้ว่าต้องม้วนรอบไหนก่อน</p>
+        </div>
+        <div class="legend">
+          <span><i class="dot manual"></i> Manual Check</span>
+          <span><i class="dot verifying"></i> Verifying</span>
+          <span><i class="dot paid"></i> Paid</span>
+          <span><i class="dot empty"></i> Empty</span>
+        </div>
+      </header>
+
+      <section class="slot-columns" id="slotColumns"></section>
+    </section>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="../shared/config.js"></script>
+  <script src="../shared/data-store.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
