@@ -360,9 +360,130 @@ button {
   line-height: 1.35;
 }
 
+.product-card .product-note {
+  display: inline-block;
+  margin: 5px 0 6px;
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: #fff8e5;
+  color: var(--brown);
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
 .product-card small {
   color: var(--green);
   font-weight: 900;
+}
+
+.add-on-list {
+  margin-top: 13px;
+}
+
+.addon-section {
+  border: 1px solid rgba(109, 67, 29, 0.12);
+  border-radius: 21px;
+  padding: 13px;
+  background: linear-gradient(135deg, rgba(255, 248, 234, 0.92), rgba(255, 253, 247, 0.96));
+  box-shadow: 0 12px 24px rgba(109, 67, 29, 0.08);
+}
+
+.addon-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.addon-heading span {
+  color: var(--brown);
+  font-weight: 900;
+}
+
+.addon-heading p {
+  margin: 0;
+  color: #7f7a70;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.addon-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid rgba(18, 59, 40, 0.11);
+  border-radius: 17px;
+  padding: 13px;
+  background: rgba(255, 255, 255, 0.86);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms ease;
+}
+
+.addon-card:hover {
+  transform: translateY(-1px);
+}
+
+.addon-card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.addon-check {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgba(35, 96, 54, 0.24);
+  border-radius: 9px;
+  background: #fff;
+}
+
+.addon-check::after {
+  content: "";
+  width: 11px;
+  height: 6px;
+  border-bottom: 3px solid #fff;
+  border-left: 3px solid #fff;
+  opacity: 0;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+
+.addon-copy strong {
+  display: block;
+  color: var(--green-dark);
+}
+
+.addon-copy small {
+  display: block;
+  margin-top: 2px;
+  color: #697265;
+  font-weight: 800;
+}
+
+.addon-card b {
+  color: var(--brown);
+  font-size: 1rem;
+}
+
+.addon-card.selected {
+  border-color: rgba(6, 185, 84, 0.52);
+  background: #eff9ea;
+}
+
+.addon-card.selected .addon-check {
+  border-color: var(--green);
+  background: var(--green);
+}
+
+.addon-card.selected .addon-check::after {
+  opacity: 1;
 }
 
 .stepper {

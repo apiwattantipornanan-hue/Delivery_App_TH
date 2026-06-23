@@ -42,14 +42,22 @@ Order document example:
   "items": [
     {
       "id": "roll",
-      "name": "ปอเปี๊ยะสดไส้รวม",
+      "name": "ปอเปี๊ยะสด",
       "qty": 2,
       "price": 50,
       "lineTotal": 100
+    },
+    {
+      "id": "mustard",
+      "name": "มัสตาร์ด",
+      "qty": 1,
+      "price": 20,
+      "lineTotal": 20,
+      "type": "add_on"
     }
   ],
-  "total": 100,
-  "paymentAmount": 100,
+  "total": 120,
+  "paymentAmount": 120,
   "capacityBoxes": 2,
   "promptPayPayload": "...",
   "paymentStatus": "pending_slip",

@@ -5,6 +5,7 @@ const LAST_ORDER_ID_KEY = "final-app-last-order-id";
 
 const state = {
   cart: Object.fromEntries(config.products.map((product) => [product.id, product.id === "roll" ? 1 : 0])),
+  addOns: Object.fromEntries((config.addOns || []).map((addOn) => [addOn.id, false])),
   orders: [],
   settings: null,
   selectedSlot: null,
@@ -13,6 +14,7 @@ const state = {
 
 const screens = document.querySelectorAll(".screen");
 const productList = document.querySelector("#productList");
+const addOnList = document.querySelector("#addOnList");
 const productTotal = document.querySelector("#productTotal");
 const slotGrid = document.querySelector("#slotGrid");
 const checkoutTotal = document.querySelector("#checkoutTotal");
@@ -74,6 +76,15 @@ function getCartLines() {
     .filter((product) => product.qty > 0);
 }
 
+function getAddOnLines() {
+  return (config.addOns || [])
+    .map((addOn) => ({
+      ...addOn,
+      qty: state.addOns[addOn.id] ? 1 : 0,
+    }))
+    .filter((addOn) => addOn.qty > 0);
+}
+
 function getCapacityBoxes() {
   return config.products.reduce((sum, product) => {
     return product.capacityUnit ? sum + (state.cart[product.id] || 0) : sum;
@@ -81,7 +92,9 @@ function getCapacityBoxes() {
 }
 
 function getCartTotal() {
-  return getCartLines().reduce((sum, product) => sum + product.price * product.qty, 0);
+  const productTotalValue = getCartLines().reduce((sum, product) => sum + product.price * product.qty, 0);
+  const addOnTotalValue = getAddOnLines().reduce((sum, addOn) => sum + addOn.price * addOn.qty, 0);
+  return productTotalValue + addOnTotalValue;
 }
 
 function isActiveOrder(order) {
@@ -113,14 +126,18 @@ function renderProducts() {
   productList.innerHTML = config.products
     .map((product) => {
       const qty = state.cart[product.id] || 0;
+      const desc = product.desc ? `<p>${product.desc}</p>` : "";
+      const note = product.note ? `<p class="product-note">${product.note}</p>` : "";
+      const unitLabel = product.unitLabel || "ชุด";
 
       return `
         <article class="product-card">
           <img src="${product.image}" alt="${product.name}" />
           <div>
             <h3>${product.name}</h3>
-            <p>${product.desc}</p>
-            <small>${baht(product.price)} / ชุด</small>
+            ${desc}
+            ${note}
+            <small>${baht(product.price)} / ${unitLabel}</small>
           </div>
           <div class="stepper">
             <button type="button" data-action="minus" data-product="${product.id}" aria-label="ลด ${product.name}">−</button>
@@ -133,6 +150,39 @@ function renderProducts() {
     .join("");
 
   productTotal.textContent = baht(getCartTotal());
+}
+
+function renderAddOns() {
+  const addOns = config.addOns || [];
+  if (!addOnList || !addOns.length) {
+    return;
+  }
+
+  addOnList.innerHTML = `
+    <section class="addon-section" aria-label="ตัวเลือกเพิ่มเติม">
+      <div class="addon-heading">
+        <span>ตัวเลือกเพิ่มเติม</span>
+        <p>ติ๊กเพิ่มเฉพาะที่ต้องการ</p>
+      </div>
+      ${addOns
+        .map((addOn) => {
+          const selected = Boolean(state.addOns[addOn.id]);
+
+          return `
+            <label class="addon-card ${selected ? "selected" : ""}">
+              <input type="checkbox" data-addon="${addOn.id}" ${selected ? "checked" : ""} />
+              <span class="addon-check" aria-hidden="true"></span>
+              <span class="addon-copy">
+                <strong>${addOn.name}</strong>
+                <small>${addOn.desc}</small>
+              </span>
+              <b>${baht(addOn.price)}</b>
+            </label>
+          `;
+        })
+        .join("")}
+    </section>
+  `;
 }
 
 function renderSlots() {
@@ -165,11 +215,12 @@ function renderTotals() {
   const total = getCartTotal();
   checkoutTotal.textContent = baht(total);
   checkoutDetail.textContent = state.selectedSlot ? `รับที่ร้าน ${state.selectedSlot}` : "เลือกรอบรับสินค้า";
-  createOrderButton.disabled = total <= 0 || !state.selectedSlot;
+  createOrderButton.disabled = getCartLines().length <= 0 || !state.selectedSlot;
 }
 
 function render() {
   renderProducts();
+  renderAddOns();
   renderSlots();
   renderTotals();
 }
@@ -545,6 +596,11 @@ async function createPickupOrder() {
   const customerName = document.querySelector("#customerName").value.trim();
   const customerPhone = document.querySelector("#customerPhone").value.trim();
 
+  if (getCartLines().length <= 0) {
+    alert("กรุณาเลือกสินค้าอย่างน้อย 1 รายการ");
+    return;
+  }
+
   if (!customerName || !customerPhone) {
     alert("กรุณากรอกชื่อและเบอร์โทรก่อนสร้าง QR");
     return;
@@ -574,12 +630,13 @@ async function createPickupOrder() {
     pickupTime: state.selectedSlot,
     customerName,
     customerPhone,
-    items: getCartLines().map((line) => ({
+    items: [...getCartLines(), ...getAddOnLines()].map((line) => ({
       id: line.id,
       name: line.name,
       qty: line.qty,
       price: line.price,
       lineTotal: line.qty * line.price,
+      type: line.type || "product",
     })),
     total,
     paymentAmount,
@@ -614,6 +671,17 @@ productList.addEventListener("click", (event) => {
   render();
 });
 
+addOnList.addEventListener("change", (event) => {
+  const input = event.target.closest("input[data-addon]");
+  if (!input) return;
+
+  state.addOns[input.dataset.addon] = input.checked;
+  paymentPanel.hidden = true;
+  state.createdOrder = null;
+  stopExpiryTimer();
+  render();
+});
+
 slotGrid.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-slot]");
   if (!button || button.disabled) return;
@@ -635,7 +703,7 @@ document.querySelectorAll("[data-back]").forEach((button) => {
 
 document.querySelector("#pickupChoice").addEventListener("click", () => showScreen("productScreen"));
 document.querySelector("#toCheckoutButton").addEventListener("click", () => {
-  if (getCartTotal() <= 0) {
+  if (getCartLines().length <= 0) {
     alert("กรุณาเลือกสินค้าอย่างน้อย 1 รายการ");
     return;
   }
