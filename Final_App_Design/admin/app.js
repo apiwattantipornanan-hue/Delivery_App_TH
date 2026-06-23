@@ -38,15 +38,15 @@ function getPaymentBadge(order) {
   }
 
   if (order.paymentStatus === "verifying") {
-    return `<div class="payment-status verifying"><span>ชำระเงิน</span><strong>ตรวจสลิป</strong></div>`;
+    return `<div class="payment-status verifying"><span>ชำระเงิน</span><strong>ตรวจยอด</strong></div>`;
   }
 
   if (order.paymentStatus === "needs_manual_check" || order.paymentStatus === "pending_slip") {
-    return `<div class="payment-status manual"><span>ชำระเงิน</span><strong>รอตรวจสลิป</strong></div>`;
+    return `<div class="payment-status manual"><span>ชำระเงิน</span><strong>รอตรวจยอดโอน</strong></div>`;
   }
 
   if (order.paymentStatus === "rejected") {
-    return `<div class="payment-status rejected"><span>ชำระเงิน</span><strong>สลิปไม่ผ่าน</strong></div>`;
+    return `<div class="payment-status rejected"><span>ชำระเงิน</span><strong>ยอดไม่ผ่าน</strong></div>`;
   }
 
   return `<div class="payment-status qr"><span>ชำระเงิน</span><strong>รอชำระ</strong></div>`;
@@ -77,8 +77,8 @@ function getVerificationLine(order) {
 
   const provider = order.verification.provider || "manual";
   const ref = order.verification.transRef ? ` · ${order.verification.transRef}` : "";
-  const message = order.verification.message ? ` · ${order.verification.message}` : "";
-  return `<p class="verification-line">Check: ${provider}${ref}${message}</p>`;
+  const label = provider === "manual_bank_check" ? "ลูกค้าแจ้งโอนแล้ว รอตรวจในแอปธนาคาร" : provider;
+  return `<p class="verification-line">ตรวจยอด: ${label}${ref}</p>`;
 }
 
 function getFulfillmentStatus(order) {

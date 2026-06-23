@@ -33,8 +33,7 @@ const downloadQrButton = document.querySelector("#downloadQrButton");
 const qrNote = document.querySelector(".qr-note");
 const qrExpiryCard = document.querySelector("#qrExpiryCard");
 const qrExpiryCountdown = document.querySelector("#qrExpiryCountdown");
-const uploadSlipLabel = document.querySelector(".upload-slip");
-const slipInput = document.querySelector("#slipInput");
+const confirmTransferButton = document.querySelector("#confirmTransferButton");
 const orderStatusMessage = document.querySelector("#orderStatusMessage");
 let expiryTimerId = null;
 let expirySyncing = false;
@@ -281,6 +280,10 @@ function isPaymentFinished(order) {
   );
 }
 
+function isTransferReported(order) {
+  return Boolean(order && ["needs_manual_check", "pending_slip", "verifying"].includes(order.paymentStatus));
+}
+
 function canAutoExpire(order) {
   return (
     order &&
@@ -327,7 +330,7 @@ function renderQrExpiry() {
 
   state.createdOrder = order;
 
-  if (isPaymentFinished(order)) {
+  if (isPaymentFinished(order) || isTransferReported(order)) {
     qrExpiryCard.hidden = true;
     downloadQrButton.classList.add("is-disabled");
     return;
@@ -401,8 +404,8 @@ function getCustomerOrderStatus(order) {
   if (order.paymentStatus === "rejected") {
     return {
       className: "problem",
-      label: "สลิปยังไม่ผ่าน",
-      text: "กรุณาติดต่อร้านหรืออัปโหลดสลิปที่ถูกต้องอีกครั้งค่ะ",
+      label: "ยอดโอนยังไม่ผ่าน",
+      text: "กรุณาติดต่อร้านเพื่อตรวจสอบยอดโอนอีกครั้งค่ะ",
       showMap: false,
     };
   }
@@ -419,7 +422,7 @@ function getCustomerOrderStatus(order) {
   if (order.paymentStatus === "verifying" || order.paymentStatus === "needs_manual_check") {
     return {
       className: "waiting",
-      label: "ร้านกำลังตรวจสอบสลิป",
+      label: "ร้านกำลังตรวจสอบยอดโอน",
       text: "ร้านจะตรวจเงินเข้าในแอปธนาคารก่อนยืนยันออเดอร์ค่ะ",
       showMap: false,
     };
@@ -428,7 +431,7 @@ function getCustomerOrderStatus(order) {
   return {
     className: "waiting",
     label: "รอชำระเงิน",
-    text: `กรุณาชำระเงินและอัปโหลดสลิปภายใน ${config.qrExpiresInMinutes || 15} นาที`,
+    text: `กรุณาชำระเงินภายใน ${config.qrExpiresInMinutes || 15} นาที แล้วกด “ฉันโอนเงินแล้ว”`,
     showMap: false,
   };
 }
@@ -441,25 +444,31 @@ function renderCustomerOrderStatus() {
     qrWrap.hidden = false;
     qrNote.hidden = false;
     downloadQrButton.hidden = false;
-    uploadSlipLabel.hidden = false;
+    confirmTransferButton.hidden = false;
+    confirmTransferButton.disabled = false;
     orderStatusMessage.hidden = false;
     return;
   }
 
   const status = getCustomerOrderStatus(order);
   const paymentFinished = isPaymentFinished(order);
+  const transferReported = isTransferReported(order);
+  const hidePaymentControls = paymentFinished || transferReported;
 
   customerOrderStatusCard.hidden = false;
   customerOrderStatusCard.className = `customer-status-card ${status.className}`;
   customerOrderStatusLabel.textContent = status.label;
   customerOrderStatusText.textContent = status.text;
   customerPickupMap.hidden = !status.showMap;
-  qrWrap.hidden = paymentFinished;
-  qrNote.hidden = paymentFinished;
-  downloadQrButton.hidden = paymentFinished;
-  uploadSlipLabel.hidden = paymentFinished;
+  qrWrap.hidden = hidePaymentControls;
+  qrNote.hidden = hidePaymentControls;
+  downloadQrButton.hidden = hidePaymentControls;
+  confirmTransferButton.hidden = hidePaymentControls;
   orderStatusMessage.hidden = paymentFinished;
-  slipInput.disabled = paymentFinished;
+
+  if (transferReported && !paymentFinished) {
+    orderStatusMessage.textContent = "แจ้งร้านแล้ว ร้านจะตรวจยอดโอนในแอปธนาคารและยืนยันออเดอร์ให้ค่ะ";
+  }
 }
 
 async function renderPromptPayQr(order) {
@@ -493,103 +502,40 @@ async function showPaymentPanelForOrder(order) {
   startQrExpiryTimer(order);
 }
 
-async function verifySlipWithBackend(file, order) {
-  if (!config.paymentVerification?.enabled) {
-    return {
-      status: "manual",
-      message: "ยังไม่ได้เปิดระบบตรวจสลิปอัตโนมัติ",
-    };
+async function confirmTransferToShop() {
+  const latestOrder = getLatestCreatedOrder();
+  if (!latestOrder || isTransferReported(latestOrder) || isPaymentFinished(latestOrder)) {
+    return;
   }
 
-  const body = new FormData();
-  body.append("orderId", order.id);
-  body.append("expectedAmount", String(order.paymentAmount || order.total));
-  body.append("promptPayId", config.promptPayId);
-  body.append("slip", file, file.name || "payment-slip.jpg");
-
-  try {
-    const response = await fetch(config.paymentVerification.verifyEndpoint, {
-      method: "POST",
-      body,
-    });
-    const data = await response.json().catch(() => ({}));
-
-    if (!response.ok && !data.status) {
-      return {
-        status: "needs_manual_check",
-        message: `ระบบตรวจสลิปตอบกลับไม่สำเร็จ (${response.status})`,
-      };
-    }
-
-    return data;
-  } catch {
-    return {
-      status: "manual",
-      message: "ยังไม่ได้เชื่อม backend ตรวจสลิปในเครื่องนี้ ร้านจะตรวจสลิปเองก่อน",
-    };
+  if (isQrExpired(latestOrder)) {
+    alert("QR หมดอายุแล้ว กรุณาสร้างออเดอร์ใหม่ก่อนโอนเงินค่ะ");
+    renderQrExpiry();
+    return;
   }
-}
 
-function getVerificationPatch(result, file, expiredBeforeUpload) {
-  const base = {
-    slipUploaded: true,
-    slipFileName: file.name,
-    slipUploadedAt: new Date().toISOString(),
+  confirmTransferButton.disabled = true;
+  orderStatusMessage.textContent = "กำลังแจ้งร้าน...";
+
+  const now = new Date().toISOString();
+  const patch = {
+    paymentStatus: "needs_manual_check",
+    orderStatus: "new",
+    paymentReported: true,
+    paymentReportedAt: now,
     verification: {
-      ...(result.verification || {}),
-      provider: result.provider || result.verification?.provider || "manual",
-      message: result.message,
-      checkedAt: result.checkedAt || new Date().toISOString(),
-      qrExpiredBeforeUpload: expiredBeforeUpload,
+      provider: "manual_bank_check",
+      message: "Customer tapped paid button. Shop will verify transfer in bank app.",
+      checkedAt: now,
     },
   };
 
-  if (expiredBeforeUpload) {
-    return {
-      ...base,
-      paymentStatus: "needs_manual_check",
-      orderStatus: "new",
-    };
-  }
-
-  if (result.status === "verified") {
-    return {
-      ...base,
-      paymentStatus: "paid",
-      orderStatus: "confirmed",
-      paidAt: new Date().toISOString(),
-    };
-  }
-
-  if (result.status === "rejected") {
-    return {
-      ...base,
-      paymentStatus: "rejected",
-      orderStatus: "new",
-    };
-  }
-
-  return {
-    ...base,
-    paymentStatus: "needs_manual_check",
-    orderStatus: "new",
-  };
-}
-
-function getCustomerVerificationMessage(status, expiredBeforeUpload) {
-  if (expiredBeforeUpload) {
-    return "รับสลิปแล้ว แต่ QR หมดอายุก่อนอัปโหลด ร้านจะตรวจสอบให้เอง";
-  }
-
-  if (status === "verified") {
-    return "ตรวจสอบสลิปสำเร็จแล้ว ออเดอร์ถูกยืนยันเรียบร้อย";
-  }
-
-  if (status === "rejected") {
-    return "สลิปนี้ตรวจไม่ผ่าน กรุณาติดต่อร้านหรืออัปโหลดสลิปที่ถูกต้อง";
-  }
-
-  return "รับสลิปแล้ว ระบบส่งต่อให้ร้านตรวจสอบอีกครั้ง";
+  await store.updateOrder(latestOrder.id, patch);
+  state.createdOrder = { ...latestOrder, ...patch };
+  stopExpiryTimer();
+  orderStatusMessage.textContent = "แจ้งร้านแล้ว ร้านจะตรวจยอดโอนในแอปธนาคารและยืนยันออเดอร์ให้ค่ะ";
+  renderCustomerOrderStatus();
+  renderQrExpiry();
 }
 
 async function createPickupOrder() {
@@ -644,7 +590,7 @@ async function createPickupOrder() {
     promptPayPayload,
     paymentStatus: "awaiting_payment",
     orderStatus: "new",
-    slipUploaded: false,
+    paymentReported: false,
     qrGeneratedAt: qrGeneratedAt.toISOString(),
     qrExpiresAt: getQrExpiresAt(qrGeneratedAt),
     createdAt: qrGeneratedAt.toISOString(),
@@ -654,7 +600,7 @@ async function createPickupOrder() {
   await store.createOrder(order);
   await showPaymentPanelForOrder(order);
 
-  orderStatusMessage.textContent = `สร้าง Dynamic QR แล้ว กรุณาชำระเงินภายใน ${config.qrExpiresInMinutes || 15} นาที`;
+  orderStatusMessage.textContent = `สร้าง Dynamic QR แล้ว กรุณาชำระเงินภายใน ${config.qrExpiresInMinutes || 15} นาที แล้วกด “ฉันโอนเงินแล้ว”`;
   render();
 }
 
@@ -712,36 +658,7 @@ document.querySelector("#toCheckoutButton").addEventListener("click", () => {
 
 createOrderButton.addEventListener("click", createPickupOrder);
 
-slipInput.addEventListener("change", async () => {
-  if (!state.createdOrder || !slipInput.files?.length) {
-    return;
-  }
-
-  const file = slipInput.files[0];
-  const latestOrder = getLatestCreatedOrder();
-  const expiredBeforeUpload = isQrExpired(latestOrder);
-
-  orderStatusMessage.textContent = "กำลังตรวจสอบสลิป...";
-
-  await store.updateOrder(latestOrder.id, {
-    paymentStatus: "verifying",
-    orderStatus: "new",
-    slipUploaded: true,
-    slipFileName: file.name,
-    slipUploadedAt: new Date().toISOString(),
-  });
-
-  const result = expiredBeforeUpload
-    ? { status: "manual", message: "QR expired before slip upload." }
-    : await verifySlipWithBackend(file, latestOrder);
-  const patch = getVerificationPatch(result, file, expiredBeforeUpload);
-
-  await store.updateOrder(latestOrder.id, patch);
-  state.createdOrder = { ...latestOrder, ...patch };
-  orderStatusMessage.textContent = getCustomerVerificationMessage(result.status, expiredBeforeUpload);
-  renderCustomerOrderStatus();
-  renderQrExpiry();
-});
+confirmTransferButton.addEventListener("click", confirmTransferToShop);
 
 store.subscribeOrders((orders) => {
   state.orders = orders;

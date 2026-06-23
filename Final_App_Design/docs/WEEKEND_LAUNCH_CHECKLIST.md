@@ -10,8 +10,8 @@
 - Open admin app on another phone/tablet.
 - Submit one pickup order.
 - Confirm the order appears in admin without refresh.
-- Upload a slip.
-- Confirm admin shows `Pending Slip`.
+- Tap `ฉันโอนเงินแล้ว`.
+- Confirm admin shows `รอตรวจยอดโอน`.
 - Tap `Mark Paid`.
 - Confirm status changes to `Paid`.
 
@@ -40,8 +40,8 @@ For the first weekend, do not post the admin link publicly.
 3. Pickup customer selects products and time.
 4. Customer generates Dynamic PromptPay QR.
 5. Customer pays in bank app.
-6. Customer uploads slip.
-7. Admin checks slip and taps `Mark Paid`.
+6. Customer taps `ฉันโอนเงินแล้ว`.
+7. Admin checks the bank app and taps `Mark Paid`.
 8. Kitchen prepares by pickup time slot.
 
 ## Emergency Controls
@@ -56,4 +56,4 @@ Use admin stock toggle:
 - Do not rely on static QR images.
 - Do not expose admin URL publicly.
 - Do not skip a real QR payment test.
-- Do not promise automatic slip verification until API integration is finished.
+- Do not promise automatic payment verification while the shop is using manual bank checks.

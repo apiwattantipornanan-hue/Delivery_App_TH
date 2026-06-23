@@ -9,7 +9,7 @@ This folder is isolated from the older demos. It contains:
 - `admin/` - live order queue dashboard for shop owner/kitchen.
 - `shared/` - shared config, local/Firebase data adapter, Dynamic PromptPay QR payload generator.
 - `backend/` - Firebase/Cloudflare backend reference files.
-- `functions/` - Cloudflare Pages Functions for private slip verification.
+- `functions/` - optional Cloudflare Pages Functions for future private slip verification.
 - `docs/` - launch checklist and architecture notes.
 - `assets/` - copied logo, food photos, and storefront image.
 
@@ -36,8 +36,8 @@ This folder is isolated from the older demos. It contains:
    - Capacity numbers stay behind the scenes.
    - Dynamic PromptPay QR is generated from PromptPay ID + order amount.
    - QR expires after `15` minutes by default.
-   - Customer uploads slip; backend tries SlipOK/EasySlip verification.
-   - If verification is not configured, admin sees `Manual Check` instead of fake auto-paid status.
+   - After paying, customer taps `ฉันโอนเงินแล้ว`.
+   - Admin checks the bank app manually and taps `Mark Paid`.
 
 ## Admin Journey
 
@@ -46,7 +46,7 @@ This folder is isolated from the older demos. It contains:
   - Time slot / order ID.
   - Customer name.
   - Quantity in boxes.
-  - Payment badge: `Awaiting Pay`, `Verifying`, `Manual Check`, `Rejected`, or `Paid`.
+  - Payment badge: `รอชำระ`, `รอตรวจยอดโอน`, `ยอดไม่ผ่าน`, or `ชำระแล้ว`.
 - Admin can mark an order paid.
 - Admin can mark food `Ready` when it is ready for pickup.
 - Admin can mark an order `Picked Up` after the customer receives it.
@@ -58,7 +58,7 @@ This folder is isolated from the older demos. It contains:
 After an order is created, the customer page shows a live status card:
 
 - `รอชำระเงิน`
-- `ร้านกำลังตรวจสอบสลิป`
+- `ร้านกำลังตรวจสอบยอดโอน`
 - `ชำระแล้ว กำลังเตรียมอาหาร`
 - `อาหารพร้อมรับแล้ว`
 - `รับสินค้าแล้ว`
@@ -95,22 +95,30 @@ Current value:
 15 minutes
 ```
 
-## Slip Verification
+## Manual Payment Check
 
-The frontend never stores SlipOK/EasySlip API keys.
+Current MVP flow:
 
-Cloudflare Pages Function:
+- Customer scans/saves the Dynamic PromptPay QR.
+- Customer pays in their bank app.
+- Customer taps `ฉันโอนเงินแล้ว`.
+- Admin checks the bank app manually.
+- Admin taps `Mark Paid` only after confirming money arrived.
+
+## Future Slip Verification Option
+
+The frontend must never store SlipOK/EasySlip API keys.
+
+Optional Cloudflare Pages Function:
 
 ```text
 functions/api/verify-slip.js
 ```
 
-Free-first recommendation:
+Free-first recommendation if automatic slip checking returns later:
 
 - SlipOK OK BASIC: 0 THB/month, 100 slips/month, then over-quota checks are charged.
 - EasySlip: optional fallback; public pricing starts at 99 THB/month for 250 checks.
-
-Until real API keys are configured, uploaded slips stay as `Manual Check` for admin review.
 
 ## Local Testing
 
@@ -152,5 +160,5 @@ Functions directory: functions
 
 - Do not commit payment API keys to GitHub.
 - Cloudflare environment variables are the correct place for provider keys.
-- Keep manual bank checking available as fallback when quota is exceeded or provider verification fails.
+- Manual bank checking is the active MVP payment confirmation flow.
 - Before launch, verify pricing and terms for Cloudflare, Firebase, SlipOK, and EasySlip.

@@ -60,9 +60,10 @@ Order document example:
   "paymentAmount": 120,
   "capacityBoxes": 2,
   "promptPayPayload": "...",
-  "paymentStatus": "pending_slip",
+  "paymentStatus": "needs_manual_check",
   "orderStatus": "new",
-  "slipUploaded": true,
+  "paymentReported": true,
+  "paymentReportedAt": "2026-06-18T10:01:00.000Z",
   "createdAt": "2026-06-18T10:00:00.000Z",
   "updatedAt": "2026-06-18T10:01:00.000Z"
 }
@@ -133,19 +134,23 @@ Current app:
 Production improvement:
 
 - Add backend order validation.
-- Add permanent slip file storage if you need audit images.
-- Keep SlipOK/EasySlip keys in Cloudflare environment variables.
+- Add permanent payment audit storage if you later need images/receipts.
+- Keep SlipOK/EasySlip keys in Cloudflare environment variables if automatic slip checking returns.
 - Update order status to `paid` only after amount/account/duplicate checks pass.
 
-## Slip Verification
+## Current MVP Payment Confirmation
 
-Frontend:
+Manual-bank-check flow:
 
-- Customer uploads a slip after paying.
-- The browser sends the image to `/api/verify-slip`.
-- The browser never receives or stores provider API keys.
+- Customer pays with the Dynamic PromptPay QR.
+- Customer taps `ฉันโอนเงินแล้ว`.
+- App sets `paymentStatus` to `needs_manual_check`.
+- Admin checks the bank app manually.
+- Admin taps `Mark Paid` only after confirming money arrived.
 
-Cloudflare Function:
+## Future Slip Verification Option
+
+Optional Cloudflare Function:
 
 ```text
 functions/api/verify-slip.js
@@ -175,8 +180,8 @@ else:
 
 Fallback mode:
 
-- Customer uploads slip.
-- Admin sees `Manual Check`.
+- Customer taps `ฉันโอนเงินแล้ว`.
+- Admin sees `รอตรวจยอดโอน`.
 - Shop owner checks payment in bank app.
 - Shop owner taps `Mark Paid`.
 - When the food is ready, shop owner taps `Ready`.

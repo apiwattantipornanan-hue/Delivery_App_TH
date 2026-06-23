@@ -149,13 +149,12 @@
 
           <a class="download-btn" id="downloadQrButton" href="#" download="promptpay-order-qr.png">ดาวน์โหลด QR</a>
 
-          <label class="upload-slip">
-            อัปโหลดสลิปโอนเงิน
-            <input id="slipInput" type="file" accept="image/*" />
-          </label>
+          <button class="confirm-transfer-btn" id="confirmTransferButton" type="button">
+            ฉันโอนเงินแล้ว
+          </button>
 
           <p class="status-message" id="orderStatusMessage">
-            หลังอัปโหลดสลิป ออเดอร์จะขึ้นที่หน้าแอดมินเป็น Pending Slip เพื่อให้ร้านตรวจสอบ
+            หลังโอนเงินแล้ว กดปุ่มนี้เพื่อแจ้งร้าน ร้านจะตรวจยอดในแอปธนาคารและยืนยันออเดอร์ให้ค่ะ
           </p>
         </section>
       </section>
