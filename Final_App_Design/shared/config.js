@@ -18,7 +18,7 @@ window.APP_CONFIG = {
   // Payment safety defaults. Keep API keys out of this public file.
   qrExpiresInMinutes: 15,
   paymentVerification: {
-    enabled: true,
+    enabled: false,
     verifyEndpoint: "/api/verify-slip",
     primaryProvider: "slipok",
     fallbackProvider: "easyslip",
@@ -81,13 +81,14 @@ window.APP_CONFIG = {
 };
 
 window.FINAL_APP_FIREBASE_CONFIG = {
-  enabled: false,
+  enabled: true,
   firebaseConfig: {
-    apiKey: "YOUR_FIREBASE_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID",
+    apiKey: "AIzaSyBiKVa5_xzkz_lpfj3XzZrvalyQf3-r1f8",
+    authDomain: "bunlee-pickup-order.firebaseapp.com",
+    projectId: "bunlee-pickup-order",
+    storageBucket: "bunlee-pickup-order.firebasestorage.app",
+    messagingSenderId: "708095396199",
+    appId: "1:708095396199:web:70f83ed997aa1662f347c2",
+    measurementId: "G-VVKXTKPE9Y",
   },
 };
