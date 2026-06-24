@@ -36,6 +36,19 @@
     );
   }
 
+  function withTimeout(promise, label) {
+    const timeoutMs = window.FINAL_APP_FIREBASE_CONFIG?.timeoutMs || 10000;
+
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        window.setTimeout(() => {
+          reject(new Error(`${label} timed out after ${timeoutMs}ms`));
+        }, timeoutMs);
+      }),
+    ]);
+  }
+
   let firebaseDb = null;
 
   function getFirebaseDb() {
@@ -73,7 +86,7 @@
     const db = getFirebaseDb();
 
     if (db) {
-      await db.collection("settings").doc(SETTINGS_ID).set(settings, { merge: true });
+      await withTimeout(db.collection("settings").doc(SETTINGS_ID).set(settings, { merge: true }), "saveSettings");
       return settings;
     }
 
@@ -87,7 +100,7 @@
     const db = getFirebaseDb();
 
     if (db) {
-      await db.collection("orders").doc(order.id).set(order);
+      await withTimeout(db.collection("orders").doc(order.id).set(order), "createOrder");
       return order;
     }
 
@@ -101,12 +114,15 @@
     const db = getFirebaseDb();
 
     if (db) {
-      await db.collection("orders").doc(orderId).set(
-        {
-          ...patch,
-          updatedAt: new Date().toISOString(),
-        },
-        { merge: true },
+      await withTimeout(
+        db.collection("orders").doc(orderId).set(
+          {
+            ...patch,
+            updatedAt: new Date().toISOString(),
+          },
+          { merge: true },
+        ),
+        "updateOrder",
       );
       return;
     }

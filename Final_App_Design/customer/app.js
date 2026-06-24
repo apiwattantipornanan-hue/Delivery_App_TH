@@ -37,6 +37,7 @@ const confirmTransferButton = document.querySelector("#confirmTransferButton");
 const orderStatusMessage = document.querySelector("#orderStatusMessage");
 let expiryTimerId = null;
 let expirySyncing = false;
+const CREATE_QR_BUTTON_TEXT = createOrderButton.textContent;
 
 document.querySelector("#shopName").textContent = config.shopName;
 document.querySelector("#shopSubtitle").textContent = config.shopSubtitle;
@@ -546,27 +547,37 @@ async function confirmTransferToShop() {
 }
 
 async function createPickupOrder() {
+  createOrderButton.disabled = true;
+  createOrderButton.textContent = "กำลังสร้าง QR...";
+
   const customerName = document.querySelector("#customerName").value.trim();
   const customerPhone = document.querySelector("#customerPhone").value.trim();
 
   if (getCartLines().length <= 0) {
     alert("กรุณาเลือกสินค้าอย่างน้อย 1 รายการ");
+    createOrderButton.textContent = CREATE_QR_BUTTON_TEXT;
+    renderTotals();
     return;
   }
 
   if (!customerName || !customerPhone) {
     alert("กรุณากรอกชื่อและเบอร์โทรก่อนสร้าง QR");
+    createOrderButton.textContent = CREATE_QR_BUTTON_TEXT;
+    renderTotals();
     return;
   }
 
   if (!state.selectedSlot) {
     alert("กรุณาเลือกรอบรับสินค้า");
+    createOrderButton.textContent = CREATE_QR_BUTTON_TEXT;
+    renderTotals();
     return;
   }
 
   const slotStatus = getSlotStatus(state.selectedSlot);
   if (slotStatus.disabled) {
     alert("รอบนี้ไม่สามารถจองได้ กรุณาเลือกรอบอื่น");
+    createOrderButton.textContent = CREATE_QR_BUTTON_TEXT;
     render();
     return;
   }
@@ -574,7 +585,17 @@ async function createPickupOrder() {
   const id = getNextOrderId();
   const total = getCartTotal();
   const paymentAmount = getPaymentAmount(id, total);
-  const promptPayPayload = window.PromptPayTools.buildPromptPayPayload(config.promptPayId, paymentAmount);
+  let promptPayPayload = "";
+
+  try {
+    promptPayPayload = window.PromptPayTools.buildPromptPayPayload(config.promptPayId, paymentAmount);
+  } catch {
+    alert("ยังสร้าง QR ไม่สำเร็จ กรุณารีเฟรชหน้าและลองใหม่อีกครั้งค่ะ");
+    createOrderButton.textContent = CREATE_QR_BUTTON_TEXT;
+    renderTotals();
+    return;
+  }
+
   const qrGeneratedAt = new Date();
 
   const order = {
@@ -606,15 +627,26 @@ async function createPickupOrder() {
 
   try {
     await store.createOrder(order);
-  } catch {
-    alert("ยังสร้างออเดอร์ไม่สำเร็จ กรุณาตรวจว่าเปิด Firestore Database แล้ว และลองใหม่อีกครั้งค่ะ");
+  } catch (error) {
+    const message = error?.message || "";
+    const hint = message.includes("timed out")
+      ? "ระบบรอ Firebase นานเกินไป กรุณาตรวจว่า Firestore Database ถูกสร้างแล้ว และอินเทอร์เน็ตใช้งานได้"
+      : "กรุณาตรวจว่าเปิด Firestore Database แล้ว และ Rules อนุญาตให้อ่าน/เขียนชั่วคราว";
+    alert(`ยังสร้างออเดอร์ไม่สำเร็จ\n${hint}`);
+    createOrderButton.textContent = CREATE_QR_BUTTON_TEXT;
+    renderTotals();
     return;
   }
 
-  await showPaymentPanelForOrder(order);
-
-  orderStatusMessage.textContent = `สร้าง Dynamic QR แล้ว กรุณาชำระเงินภายใน ${config.qrExpiresInMinutes || 15} นาที แล้วกด “ฉันโอนเงินแล้ว”`;
-  render();
+  try {
+    await showPaymentPanelForOrder(order);
+    orderStatusMessage.textContent = `สร้าง Dynamic QR แล้ว กรุณาชำระเงินภายใน ${config.qrExpiresInMinutes || 15} นาที แล้วกด “ฉันโอนเงินแล้ว”`;
+  } catch {
+    alert("สร้างออเดอร์แล้ว แต่แสดง QR ไม่สำเร็จ กรุณารีเฟรชหน้าและลองเปิดออเดอร์อีกครั้งค่ะ");
+  } finally {
+    createOrderButton.textContent = CREATE_QR_BUTTON_TEXT;
+    render();
+  }
 }
 
 productList.addEventListener("click", (event) => {
