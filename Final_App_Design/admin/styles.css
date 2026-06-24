@@ -189,6 +189,7 @@ button {
   overflow: hidden;
   border-radius: 22px;
   padding: 18px;
+  min-width: 0;
 }
 
 .board-header {
@@ -252,6 +253,7 @@ button {
 .slot-columns {
   display: grid;
   grid-template-columns: repeat(4, minmax(210px, 1fr));
+  align-items: start;
   gap: 12px;
   max-height: calc(100vh - 205px);
   overflow: auto;
@@ -259,7 +261,10 @@ button {
 }
 
 .slot-column {
+  display: flex;
+  flex-direction: column;
   min-height: 188px;
+  max-height: min(560px, calc(100vh - 235px));
   border-radius: 18px;
   padding: 14px;
 }
@@ -273,6 +278,9 @@ button {
 }
 
 .slot-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   gap: 10px;
@@ -280,6 +288,7 @@ button {
   border-bottom: 1px solid var(--line);
   padding-bottom: 11px;
   margin-bottom: 12px;
+  background: var(--surface);
 }
 
 .slot-header h3 {
@@ -311,6 +320,38 @@ button {
 .order-list {
   display: grid;
   gap: 10px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.order-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.order-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: var(--line-strong);
+}
+
+.order-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.slot-column.has-orders::after {
+  content: "เลื่อนดูออเดอร์ในรอบนี้";
+  display: block;
+  margin-top: 9px;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+  color: var(--faint);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-align: center;
 }
 
 .order-card {
