@@ -107,7 +107,7 @@ function getSlotUsedBoxes(slot) {
 }
 
 function getSlotStatus(slot) {
-  if (!state.settings?.stockOpen || state.settings?.closedSlots?.includes(slot)) {
+  if (state.settings?.stockOpen === false || state.settings?.closedSlots?.includes(slot)) {
     return { label: "ของหมดชั่วคราว", status: "closed", disabled: true };
   }
 
@@ -530,7 +530,14 @@ async function confirmTransferToShop() {
     },
   };
 
-  await store.updateOrder(latestOrder.id, patch);
+  try {
+    await store.updateOrder(latestOrder.id, patch);
+  } catch {
+    confirmTransferButton.disabled = false;
+    orderStatusMessage.textContent = "ยังแจ้งร้านไม่สำเร็จ กรุณาตรวจอินเทอร์เน็ตแล้วลองกดอีกครั้ง";
+    return;
+  }
+
   state.createdOrder = { ...latestOrder, ...patch };
   stopExpiryTimer();
   orderStatusMessage.textContent = "แจ้งร้านแล้ว ร้านจะตรวจยอดโอนในแอปธนาคารและยืนยันออเดอร์ให้ค่ะ";
@@ -597,7 +604,13 @@ async function createPickupOrder() {
     updatedAt: qrGeneratedAt.toISOString(),
   };
 
-  await store.createOrder(order);
+  try {
+    await store.createOrder(order);
+  } catch {
+    alert("ยังสร้างออเดอร์ไม่สำเร็จ กรุณาตรวจว่าเปิด Firestore Database แล้ว และลองใหม่อีกครั้งค่ะ");
+    return;
+  }
+
   await showPaymentPanelForOrder(order);
 
   orderStatusMessage.textContent = `สร้าง Dynamic QR แล้ว กรุณาชำระเงินภายใน ${config.qrExpiresInMinutes || 15} นาที แล้วกด “ฉันโอนเงินแล้ว”`;

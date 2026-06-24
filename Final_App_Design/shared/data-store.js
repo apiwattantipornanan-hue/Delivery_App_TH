@@ -127,6 +127,8 @@
         .orderBy("createdAt", "desc")
         .onSnapshot((snapshot) => {
           callback(snapshot.docs.map((doc) => doc.data()));
+        }, () => {
+          callback(readLocal().orders);
         });
     }
 
@@ -146,6 +148,8 @@
     if (db) {
       return db.collection("settings").doc(SETTINGS_ID).onSnapshot((doc) => {
         callback(doc.exists ? doc.data() : initialStore().settings);
+      }, () => {
+        callback(initialStore().settings);
       });
     }
 
