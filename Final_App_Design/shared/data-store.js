@@ -8,7 +8,7 @@
       settings: {
         id: SETTINGS_ID,
         stockOpen: true,
-        closedSlots: ["11:00"],
+        closedSlots: [],
         updatedAt: new Date().toISOString(),
       },
     };
