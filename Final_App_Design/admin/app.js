@@ -114,7 +114,7 @@ function renderLineItems(items, emptyText) {
 
 function getFulfillmentStatus(order) {
   if (order.orderStatus === "ready_for_pickup") {
-    return `<div class="prep-status ready"><span>รับสินค้า</span><strong>พร้อมรับ</strong></div>`;
+    return `<div class="prep-status ready"><span>รับสินค้า</span><strong>แจ้งลูกค้าแล้ว</strong></div>`;
   }
 
   if (order.orderStatus === "picked_up") {
@@ -129,19 +129,10 @@ function getFulfillmentStatus(order) {
 }
 
 function getOrderActions(order) {
-  if (order.orderStatus === "picked_up") {
+  if (order.orderStatus === "picked_up" || order.orderStatus === "ready_for_pickup") {
     return `
       <div class="order-actions one-action">
-        <button class="complete-order" type="button" disabled>เสร็จแล้ว</button>
-      </div>
-    `;
-  }
-
-  if (order.orderStatus === "ready_for_pickup") {
-    return `
-      <div class="order-actions">
-        <button class="picked-up" type="button" data-action="picked_up" data-order="${order.id}">ลูกค้ารับแล้ว</button>
-        <button class="cancel-order" type="button" data-action="cancelled" data-order="${order.id}">ยกเลิก</button>
+        <button class="complete-order" type="button" disabled>แจ้งลูกค้าแล้ว</button>
       </div>
     `;
   }
@@ -180,25 +171,6 @@ function orderCard(order) {
 
       ${getOrderActions(order)}
 
-      <div class="kitchen-summary ${mustardClass}">
-        <span>รอบ ${order.pickupTime || "-"}</span>
-        <strong>${mustardLabel}</strong>
-      </div>
-
-      ${getPaymentBadge(order)}
-      ${getFulfillmentStatus(order)}
-
-      <div class="order-meta">
-        <div>
-          <span>จำนวน</span>
-          <strong>${order.capacityBoxes || 0} Boxes</strong>
-        </div>
-        <div>
-          <span>ยอดชำระ</span>
-          <strong>${baht(order.paymentAmount || order.total || 0)}</strong>
-        </div>
-      </div>
-
       <section class="item-panel">
         <div class="item-section">
           <span class="item-heading">สินค้า</span>
@@ -209,6 +181,27 @@ function orderCard(order) {
           ${renderLineItems(addOns, "ไม่มีตัวเลือกเพิ่ม")}
         </div>
       </section>
+
+      <div class="kitchen-summary ${mustardClass}">
+        <span>รอบ ${order.pickupTime || "-"}</span>
+        <strong>${mustardLabel}</strong>
+      </div>
+
+      <div class="status-row">
+        ${getPaymentBadge(order)}
+        ${getFulfillmentStatus(order)}
+      </div>
+
+      <div class="order-meta">
+        <div>
+          <span>จำนวนกล่อง</span>
+          <strong>${order.capacityBoxes || 0}</strong>
+        </div>
+        <div>
+          <span>ยอดชำระ</span>
+          <strong>${baht(order.paymentAmount || order.total || 0)}</strong>
+        </div>
+      </div>
 
       ${getVerificationLine(order)}
     </article>

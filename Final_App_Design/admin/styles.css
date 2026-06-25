@@ -411,9 +411,8 @@ button {
 .payment-status {
   display: grid;
   gap: 4px;
-  margin-top: 12px;
   border-radius: 13px;
-  padding: 10px 11px;
+  padding: 9px 10px;
 }
 
 .payment-status span {
@@ -459,9 +458,8 @@ button {
 .prep-status {
   display: grid;
   gap: 4px;
-  margin-top: 8px;
   border-radius: 13px;
-  padding: 10px 11px;
+  padding: 9px 10px;
   background: #f7f5ef;
   color: var(--muted);
 }
@@ -500,7 +498,7 @@ button {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
-  margin: 11px 0;
+  margin: 9px 0 0;
 }
 
 .order-meta div {
@@ -543,7 +541,7 @@ button {
   grid-template-columns: 1fr 0.8fr;
   gap: 8px;
   margin-top: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .order-actions.one-action {
@@ -593,9 +591,9 @@ button {
   justify-content: space-between;
   gap: 10px;
   align-items: center;
-  margin: 0 0 11px;
+  margin: 9px 0;
   border-radius: 14px;
-  padding: 11px 12px;
+  padding: 9px 11px;
   background: #f7f5ef;
 }
 
@@ -626,7 +624,7 @@ button {
 .item-panel {
   display: grid;
   gap: 9px;
-  margin-top: 11px;
+  margin-top: 2px;
 }
 
 .item-section {
@@ -653,9 +651,9 @@ button {
   justify-content: space-between;
   gap: 10px;
   align-items: center;
-  padding: 7px 0;
+  padding: 6px 0;
   color: #32372f;
-  font-size: 1rem;
+  font-size: 1.08rem;
   font-weight: 900;
 }
 
@@ -665,11 +663,17 @@ button {
 
 .line-item strong {
   border-radius: 999px;
-  padding: 5px 9px;
+  padding: 6px 10px;
   background: #efede8;
   color: var(--ink);
-  font-size: 0.9rem;
+  font-size: 1rem;
   white-space: nowrap;
+}
+
+.status-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
 .line-empty {
