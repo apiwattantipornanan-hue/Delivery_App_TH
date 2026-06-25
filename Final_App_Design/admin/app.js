@@ -101,7 +101,7 @@ function getOrderActions(order) {
   if (order.orderStatus === "picked_up") {
     return `
       <div class="order-actions one-action">
-        <button class="complete-order" type="button" disabled>Completed</button>
+        <button class="complete-order" type="button" disabled>เสร็จแล้ว</button>
       </div>
     `;
   }
@@ -109,8 +109,8 @@ function getOrderActions(order) {
   if (order.orderStatus === "ready_for_pickup") {
     return `
       <div class="order-actions">
-        <button class="picked-up" type="button" data-action="picked_up" data-order="${order.id}">Picked Up</button>
-        <button class="cancel-order" type="button" data-action="cancelled" data-order="${order.id}">Cancel</button>
+        <button class="picked-up" type="button" data-action="picked_up" data-order="${order.id}">ลูกค้ารับแล้ว</button>
+        <button class="cancel-order" type="button" data-action="cancelled" data-order="${order.id}">ยกเลิก</button>
       </div>
     `;
   }
@@ -118,16 +118,16 @@ function getOrderActions(order) {
   if (order.paymentStatus === "paid" || order.orderStatus === "confirmed") {
     return `
       <div class="order-actions">
-        <button class="ready-pickup" type="button" data-action="ready" data-order="${order.id}">Ready</button>
-        <button class="cancel-order" type="button" data-action="cancelled" data-order="${order.id}">Cancel</button>
+        <button class="ready-pickup" type="button" data-action="ready" data-order="${order.id}">อาหารพร้อมแล้ว</button>
+        <button class="cancel-order" type="button" data-action="cancelled" data-order="${order.id}">ยกเลิก</button>
       </div>
     `;
   }
 
   return `
     <div class="order-actions">
-      <button class="mark-paid" type="button" data-action="paid" data-order="${order.id}">Mark Paid</button>
-      <button class="cancel-order" type="button" data-action="cancelled" data-order="${order.id}">Cancel</button>
+      <button class="mark-paid" type="button" data-action="paid" data-order="${order.id}">ยืนยันชำระเงิน</button>
+      <button class="cancel-order" type="button" data-action="cancelled" data-order="${order.id}">ยกเลิก</button>
     </div>
   `;
 }
@@ -146,6 +146,7 @@ function orderCard(order) {
         </div>
       </div>
 
+      ${getOrderActions(order)}
       ${getPaymentBadge(order)}
       ${getFulfillmentStatus(order)}
 
@@ -162,7 +163,6 @@ function orderCard(order) {
 
       <ul class="item-list">${items}</ul>
       ${getVerificationLine(order)}
-      ${getOrderActions(order)}
     </article>
   `;
 }

@@ -542,6 +542,7 @@ button {
   grid-template-columns: 1fr 0.8fr;
   gap: 8px;
   margin-top: 12px;
+  margin-bottom: 12px;
 }
 
 .order-actions.one-action {
@@ -551,23 +552,28 @@ button {
 .order-actions button {
   border-radius: 12px;
   padding: 10px 8px;
-  font-size: 0.84rem;
+  font-size: 0.86rem;
   font-weight: 900;
+  line-height: 1.2;
+  min-height: 42px;
 }
 
 .mark-paid {
   background: var(--paid);
   color: #fff;
+  box-shadow: 0 8px 16px rgba(24, 131, 76, 0.16);
 }
 
 .ready-pickup {
   background: #176b47;
   color: #fff;
+  box-shadow: 0 8px 16px rgba(23, 107, 71, 0.16);
 }
 
 .picked-up {
   background: #20251f;
   color: #fff;
+  box-shadow: 0 8px 16px rgba(32, 37, 31, 0.14);
 }
 
 .complete-order {

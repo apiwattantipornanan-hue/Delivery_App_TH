@@ -370,7 +370,7 @@ function getCustomerOrderStatus(order) {
     return {
       className: "ready",
       label: "อาหารพร้อมรับแล้ว",
-      text: `ออเดอร์รอบ ${order.pickupTime} พร้อมแล้ว มารับที่ร้านได้เลยค่ะ`,
+      text: "อาหารพร้อมรับแล้วครับ จากร้านปอเปี๊ยะนายบุ้นหลี",
       showMap: true,
     };
   }
