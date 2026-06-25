@@ -81,6 +81,37 @@ function getVerificationLine(order) {
   return `<p class="verification-line">ตรวจยอด: ${label}${ref}</p>`;
 }
 
+function getOrderProducts(order) {
+  return (order.items || []).filter((item) => item.type !== "add_on");
+}
+
+function getOrderAddOns(order) {
+  return (order.items || []).filter((item) => item.type === "add_on");
+}
+
+function getMustardLabel(order) {
+  return getOrderAddOns(order).some((item) => item.id === "mustard" && Number(item.qty || 0) > 0)
+    ? "มีมัสตาร์ด"
+    : "ไม่มีมัสตาร์ด";
+}
+
+function renderLineItems(items, emptyText) {
+  if (!items.length) {
+    return `<div class="line-empty">${emptyText}</div>`;
+  }
+
+  return items
+    .map(
+      (item) => `
+        <div class="line-item">
+          <span>${item.name}</span>
+          <strong>x ${item.qty}</strong>
+        </div>
+      `,
+    )
+    .join("");
+}
+
 function getFulfillmentStatus(order) {
   if (order.orderStatus === "ready_for_pickup") {
     return `<div class="prep-status ready"><span>รับสินค้า</span><strong>พร้อมรับ</strong></div>`;
@@ -133,9 +164,10 @@ function getOrderActions(order) {
 }
 
 function orderCard(order) {
-  const items = order.items
-    .map((item) => `<li>${item.name} x ${item.qty}</li>`)
-    .join("");
+  const products = getOrderProducts(order);
+  const addOns = getOrderAddOns(order);
+  const mustardLabel = getMustardLabel(order);
+  const mustardClass = mustardLabel.startsWith("มี") ? "has-mustard" : "no-mustard";
 
   return `
     <article class="order-card ${getOrderCardClass(order)}" data-order="${order.id}">
@@ -147,6 +179,12 @@ function orderCard(order) {
       </div>
 
       ${getOrderActions(order)}
+
+      <div class="kitchen-summary ${mustardClass}">
+        <span>รอบ ${order.pickupTime || "-"}</span>
+        <strong>${mustardLabel}</strong>
+      </div>
+
       ${getPaymentBadge(order)}
       ${getFulfillmentStatus(order)}
 
@@ -161,7 +199,17 @@ function orderCard(order) {
         </div>
       </div>
 
-      <ul class="item-list">${items}</ul>
+      <section class="item-panel">
+        <div class="item-section">
+          <span class="item-heading">สินค้า</span>
+          ${renderLineItems(products, "ไม่มีสินค้า")}
+        </div>
+        <div class="item-section addon">
+          <span class="item-heading">ตัวเลือกเพิ่ม</span>
+          ${renderLineItems(addOns, "ไม่มีตัวเลือกเพิ่ม")}
+        </div>
+      </section>
+
       ${getVerificationLine(order)}
     </article>
   `;

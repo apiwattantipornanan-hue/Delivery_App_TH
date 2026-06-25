@@ -358,7 +358,7 @@ button {
   min-width: 0;
   overflow: hidden;
   border-radius: 16px;
-  padding: 13px;
+  padding: 14px;
 }
 
 .order-card.paid-card {
@@ -391,7 +391,7 @@ button {
 .order-id {
   display: block;
   color: var(--faint);
-  font-size: 0.76rem;
+  font-size: 0.82rem;
   font-weight: 900;
   max-width: 132px;
   overflow: hidden;
@@ -403,7 +403,8 @@ button {
   display: block;
   margin-top: 3px;
   color: var(--ink);
-  font-size: 1.05rem;
+  font-size: 1.24rem;
+  line-height: 1.2;
   font-weight: 900;
 }
 
@@ -552,10 +553,10 @@ button {
 .order-actions button {
   border-radius: 12px;
   padding: 10px 8px;
-  font-size: 0.86rem;
+  font-size: 0.96rem;
   font-weight: 900;
   line-height: 1.2;
-  min-height: 42px;
+  min-height: 48px;
 }
 
 .mark-paid {
@@ -585,6 +586,96 @@ button {
 .cancel-order {
   background: #efede8;
   color: var(--ink);
+}
+
+.kitchen-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin: 0 0 11px;
+  border-radius: 14px;
+  padding: 11px 12px;
+  background: #f7f5ef;
+}
+
+.kitchen-summary span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.kitchen-summary strong {
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-size: 0.86rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.kitchen-summary.has-mustard strong {
+  background: var(--manual-bg);
+  color: var(--manual);
+}
+
+.kitchen-summary.no-mustard strong {
+  background: #efede8;
+  color: var(--muted);
+}
+
+.item-panel {
+  display: grid;
+  gap: 9px;
+  margin-top: 11px;
+}
+
+.item-section {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 10px;
+  background: #fbfaf6;
+}
+
+.item-section.addon {
+  background: #fffaf0;
+}
+
+.item-heading {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.line-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  padding: 7px 0;
+  color: #32372f;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.line-item + .line-item {
+  border-top: 1px solid rgba(222, 216, 203, 0.75);
+}
+
+.line-item strong {
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: #efede8;
+  color: var(--ink);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.line-empty {
+  color: var(--faint);
+  font-size: 0.88rem;
+  font-weight: 800;
 }
 
 .empty-slot {
