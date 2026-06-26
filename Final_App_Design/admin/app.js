@@ -17,6 +17,24 @@ function isActiveOrder(order) {
   return !["cancelled", "expired"].includes(order.orderStatus);
 }
 
+function isTodayOrder(order) {
+  if (!order.createdAt) return true;
+
+  const createdAt = new Date(order.createdAt);
+  if (Number.isNaN(createdAt.getTime())) return true;
+
+  const today = new Date();
+  return (
+    createdAt.getFullYear() === today.getFullYear() &&
+    createdAt.getMonth() === today.getMonth() &&
+    createdAt.getDate() === today.getDate()
+  );
+}
+
+function isTodayActiveOrder(order) {
+  return isActiveOrder(order) && isTodayOrder(order);
+}
+
 function generateSlots() {
   const slots = [];
   const [startHour, startMinute] = config.pickupStart.split(":").map(Number);
@@ -93,6 +111,24 @@ function getMustardLabel(order) {
   return getOrderAddOns(order).some((item) => item.id === "mustard" && Number(item.qty || 0) > 0)
     ? "มีมัสตาร์ด"
     : "ไม่มีมัสตาร์ด";
+}
+
+function getLineLabel(order) {
+  if (order.lineReadyStatus === "sent") {
+    return "ส่ง LINE แล้ว";
+  }
+
+  if (order.lineReadyStatus === "failed") {
+    return "ส่ง LINE ไม่สำเร็จ";
+  }
+
+  return order.lineUserId ? "ผูก LINE แล้ว" : "ยังไม่ผูก LINE";
+}
+
+function getLineClass(order) {
+  if (order.lineReadyStatus === "sent") return "line-sent";
+  if (order.lineReadyStatus === "failed") return "line-failed";
+  return order.lineUserId ? "line-linked" : "line-missing";
 }
 
 function renderLineItems(items, emptyText) {
@@ -187,6 +223,11 @@ function orderCard(order) {
         <strong>${mustardLabel}</strong>
       </div>
 
+      <div class="line-summary ${getLineClass(order)}">
+        <span>LINE</span>
+        <strong>${getLineLabel(order)}</strong>
+      </div>
+
       <div class="status-row">
         ${getPaymentBadge(order)}
         ${getFulfillmentStatus(order)}
@@ -209,7 +250,7 @@ function orderCard(order) {
 }
 
 function renderStats() {
-  const activeOrders = orders.filter(isActiveOrder);
+  const activeOrders = orders.filter(isTodayActiveOrder);
   totalOrders.textContent = activeOrders.length;
   pendingOrders.textContent = activeOrders.filter((order) => order.paymentStatus !== "paid").length;
   paidOrders.textContent = activeOrders.filter((order) => order.paymentStatus === "paid").length;
@@ -225,7 +266,7 @@ function renderSettings() {
 
 function renderQueue() {
   const slots = generateSlots();
-  const activeOrders = orders.filter(isActiveOrder);
+  const activeOrders = orders.filter(isTodayActiveOrder);
 
   slotColumns.innerHTML = slots
     .map((slot) => {
@@ -271,6 +312,33 @@ stockToggle.addEventListener("click", async () => {
   });
 });
 
+async function sendReadyLineMessage(orderId) {
+  const endpoint = config.lineNotifications?.readyEndpoint;
+  if (!config.lineNotifications?.enabled || !endpoint) {
+    return { status: "disabled" };
+  }
+
+  const order = orders.find((item) => item.id === orderId);
+  if (!order?.lineUserId) {
+    return { status: "needs_line_link" };
+  }
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ orderId }),
+  });
+
+  const result = await response.json().catch(() => ({
+    status: response.ok ? "sent" : "failed",
+    message: response.statusText,
+  }));
+
+  return result;
+}
+
 slotColumns.addEventListener("click", async (event) => {
   const button = event.target.closest("button[data-action][data-order]");
   if (!button) return;
@@ -284,10 +352,27 @@ slotColumns.addEventListener("click", async (event) => {
   }
 
   if (button.dataset.action === "ready") {
+    button.disabled = true;
+    button.textContent = "กำลังแจ้งลูกค้า";
+
     await store.updateOrder(button.dataset.order, {
       orderStatus: "ready_for_pickup",
       readyAt: new Date().toISOString(),
     });
+
+    try {
+      const result = await sendReadyLineMessage(button.dataset.order);
+      await store.updateOrder(button.dataset.order, {
+        lineReadyStatus: result.status || "unknown",
+        lineReadyMessage: result.message || "",
+        lineReadySentAt: result.status === "sent" ? new Date().toISOString() : "",
+      });
+    } catch (error) {
+      await store.updateOrder(button.dataset.order, {
+        lineReadyStatus: "failed",
+        lineReadyMessage: error?.message || "Cannot send LINE ready message.",
+      });
+    }
   }
 
   if (button.dataset.action === "picked_up") {

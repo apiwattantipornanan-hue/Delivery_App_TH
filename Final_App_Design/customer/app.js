@@ -22,6 +22,10 @@ const checkoutDetail = document.querySelector("#checkoutDetail");
 const createOrderButton = document.querySelector("#createOrderButton");
 const paymentPanel = document.querySelector("#paymentPanel");
 const createdOrderId = document.querySelector("#createdOrderId");
+const lineOrderLinkCard = document.querySelector("#lineOrderLinkCard");
+const lineOrderIdText = document.querySelector("#lineOrderIdText");
+const lineChatLink = document.querySelector("#lineChatLink");
+const copyOrderIdButton = document.querySelector("#copyOrderIdButton");
 const customerOrderStatusCard = document.querySelector("#customerOrderStatusCard");
 const customerOrderStatusLabel = document.querySelector("#customerOrderStatusLabel");
 const customerOrderStatusText = document.querySelector("#customerOrderStatusText");
@@ -42,8 +46,8 @@ const CREATE_QR_BUTTON_TEXT = createOrderButton.textContent;
 document.querySelector("#shopName").textContent = config.shopName;
 document.querySelector("#shopSubtitle").textContent = config.shopSubtitle;
 document.querySelector("#mapsLink").href = config.googleMapsUrl;
-document.querySelector("#deliveryChoice").href = config.deliveryUrl;
-document.querySelector("#deliveryButton").href = config.deliveryUrl;
+document.querySelector("#lineFriendLink").href = config.lineOfficialAccountUrl || "#";
+lineChatLink.href = config.lineOfficialAccountUrl || "#";
 customerPickupMap.href = config.googleMapsUrl;
 
 function showScreen(screenId) {
@@ -101,9 +105,23 @@ function isActiveOrder(order) {
   return !["cancelled", "expired"].includes(order.orderStatus);
 }
 
+function isTodayOrder(order) {
+  if (!order.createdAt) return true;
+
+  const createdAt = new Date(order.createdAt);
+  if (Number.isNaN(createdAt.getTime())) return true;
+
+  const today = new Date();
+  return (
+    createdAt.getFullYear() === today.getFullYear() &&
+    createdAt.getMonth() === today.getMonth() &&
+    createdAt.getDate() === today.getDate()
+  );
+}
+
 function getSlotUsedBoxes(slot) {
   return state.orders
-    .filter((order) => order.fulfillment === "pickup" && order.pickupTime === slot && isActiveOrder(order))
+    .filter((order) => order.fulfillment === "pickup" && order.pickupTime === slot && isActiveOrder(order) && isTodayOrder(order))
     .reduce((sum, order) => sum + (order.capacityBoxes || 0), 0);
 }
 
@@ -497,6 +515,8 @@ async function showPaymentPanelForOrder(order) {
   state.createdOrder = order;
   paymentPanel.hidden = false;
   createdOrderId.textContent = order.id;
+  lineOrderIdText.textContent = order.id;
+  lineOrderLinkCard.hidden = Boolean(order.lineUserId);
   rememberOrder(order.id);
   renderCustomerOrderStatus();
   await renderPromptPayQr(order);
@@ -705,6 +725,21 @@ createOrderButton.addEventListener("click", createPickupOrder);
 
 confirmTransferButton.addEventListener("click", confirmTransferToShop);
 
+copyOrderIdButton.addEventListener("click", async () => {
+  const order = getLatestCreatedOrder();
+  if (!order?.id) return;
+
+  try {
+    await navigator.clipboard.writeText(order.id);
+    copyOrderIdButton.textContent = "คัดลอกแล้ว";
+    window.setTimeout(() => {
+      copyOrderIdButton.textContent = "คัดลอกเลขออเดอร์";
+    }, 1600);
+  } catch {
+    alert(`เลขออเดอร์ของคุณคือ ${order.id}`);
+  }
+});
+
 store.subscribeOrders((orders) => {
   state.orders = orders;
 
@@ -715,6 +750,8 @@ store.subscribeOrders((orders) => {
       state.createdOrder = trackedOrder;
       paymentPanel.hidden = false;
       createdOrderId.textContent = trackedOrder.id;
+      lineOrderIdText.textContent = trackedOrder.id;
+      lineOrderLinkCard.hidden = Boolean(trackedOrder.lineUserId);
     }
   }
 

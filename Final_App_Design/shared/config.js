@@ -3,11 +3,20 @@ window.APP_CONFIG = {
   shopSubtitle: "ต้นตำรับกว่า 50 ปี จองง่าย ไม่ต้องโทร",
   googleMapsUrl: "https://maps.app.goo.gl/mKDQsifSyT6BMvvZ7",
   deliveryUrl: "https://apiwattantipornanan-hue.github.io/Delivery_App_TH/UI_Jun_2026/index.html",
+  lineOfficialAccountUrl: "https://line.me/R/ti/p/@115utsxg",
+  lineNotifications: {
+    enabled: true,
+    readyEndpoint: "/api/line-ready",
+  },
   currency: "THB",
   capacityPerSlot: 12,
   pickupStart: "09:30",
   pickupEnd: "15:00",
   pickupIntervalMinutes: 30,
+  dailyPageRefresh: {
+    enabled: true,
+    time: "08:55",
+  },
 
   // Replace this before real launch. Use phone, national ID, or e-wallet PromptPay ID.
   promptPayId: "0867876813",

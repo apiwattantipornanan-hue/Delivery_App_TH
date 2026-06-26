@@ -42,15 +42,25 @@
             <b>แนะนำ</b>
           </button>
 
-          <a class="choice-card" id="deliveryChoice" href="#">
+          <button class="choice-card disabled-choice" id="deliveryChoice" type="button" disabled>
             <span class="choice-icon">⇢</span>
             <span>
               <strong>จัดส่ง</strong>
               <small>ไปยังหน้าสั่งซื้อและชำระเงินเดิม</small>
+              <em>จะเปิดบริการเร็ว ๆ นี้/กำลังพัฒนาค่ะ</em>
             </span>
-            <b class="yellow">Delivery</b>
-          </a>
+            <b>เร็ว ๆ นี้</b>
+          </button>
         </div>
+
+        <section class="line-friend-card" aria-label="เพิ่มเพื่อน LINE ร้านนายบุ้นหลี">
+          <div class="line-copy">
+            <span>LINE แจ้งเตือน</span>
+            <strong>เพิ่มเพื่อนเพื่อรับข้อความจากร้าน</strong>
+            <p>แอดไลน์นายบุ้นหลี เพื่อรับข้อความตอบรับเมื่ออาหารพร้อมส่ง จากเรานะค่ะ ขอบคุณค่ะ</p>
+          </div>
+          <a id="lineFriendLink" href="#" target="_blank" rel="noreferrer">เพิ่มเพื่อน LINE</a>
+        </section>
 
         <section class="map-card">
           <div class="storefront-photo">
@@ -67,7 +77,10 @@
         </section>
 
         <button class="primary-btn" type="button" data-next="productScreen">จองรับที่ร้าน</button>
-        <a class="secondary-btn" id="deliveryButton" href="#">สั่งจัดส่ง</a>
+        <button class="secondary-btn disabled-delivery" id="deliveryButton" type="button" disabled>
+          สั่งจัดส่ง
+          <small>จะเปิดบริการเร็ว ๆ นี้/กำลังพัฒนาค่ะ</small>
+        </button>
       </section>
 
       <section class="screen" id="productScreen" aria-label="เลือกสินค้าและจำนวน">
@@ -126,6 +139,19 @@
             <strong id="createdOrderId">-</strong>
           </div>
 
+          <section class="line-order-link-card" id="lineOrderLinkCard" hidden>
+            <span>รับแจ้งเตือนผ่าน LINE</span>
+            <strong>ส่งเลขออเดอร์นี้ในแชทร้าน</strong>
+            <p>
+              หลังแอด LINE แล้ว ส่งเลขออเดอร์ <b id="lineOrderIdText">-</b>
+              ในแชท เพื่อให้ร้านส่งข้อความกลับเมื่ออาหารพร้อมค่ะ
+            </p>
+            <div class="line-link-actions">
+              <button id="copyOrderIdButton" type="button">คัดลอกเลขออเดอร์</button>
+              <a id="lineChatLink" href="#" target="_blank" rel="noreferrer">เปิด LINE ร้าน</a>
+            </div>
+          </section>
+
           <section class="customer-status-card" id="customerOrderStatusCard" hidden aria-live="polite">
             <span>สถานะออเดอร์</span>
             <strong id="customerOrderStatusLabel">รอชำระเงิน</strong>
@@ -165,6 +191,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="../shared/qrcode-generator.js"></script>
   <script src="../shared/config.js"></script>
+  <script src="../shared/daily-refresh.js"></script>
   <script src="../shared/promptpay.js"></script>
   <script src="../shared/data-store.js"></script>
   <script src="app.js"></script>
