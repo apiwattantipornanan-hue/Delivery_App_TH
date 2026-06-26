@@ -253,7 +253,7 @@ button {
 .slot-columns {
   display: grid;
   grid-template-columns: repeat(4, minmax(210px, 1fr));
-  align-items: start;
+  align-items: stretch;
   gap: 12px;
   max-height: calc(100vh - 205px);
   overflow: auto;
@@ -264,7 +264,7 @@ button {
   display: flex;
   flex-direction: column;
   min-height: 188px;
-  max-height: min(560px, calc(100vh - 235px));
+  height: min(620px, calc(100vh - 235px));
   border-radius: 18px;
   padding: 14px;
 }
@@ -319,14 +319,16 @@ button {
 
 .order-list {
   display: grid;
+  align-content: start;
   gap: 10px;
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding-right: 4px;
+  padding-right: 8px;
   scrollbar-width: thin;
   scrollbar-color: var(--line-strong) transparent;
+  scrollbar-gutter: stable;
 }
 
 .order-list::-webkit-scrollbar {
@@ -356,9 +358,9 @@ button {
 
 .order-card {
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 16px;
-  padding: 14px;
+  padding: 12px;
 }
 
 .order-card.paid-card {
@@ -380,7 +382,7 @@ button {
 .order-top {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   align-items: start;
 }
 
@@ -403,9 +405,36 @@ button {
   display: block;
   margin-top: 3px;
   color: var(--ink);
-  font-size: 1.24rem;
+  font-size: 1.15rem;
   line-height: 1.2;
   font-weight: 900;
+}
+
+.line-pill {
+  flex: 0 0 auto;
+  max-width: 112px;
+  border-radius: 999px;
+  padding: 7px 9px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.line-pill.line-linked,
+.line-pill.line-sent {
+  background: var(--paid-bg);
+  color: var(--paid);
+}
+
+.line-pill.line-missing {
+  background: #efede8;
+  color: var(--muted);
+}
+
+.line-pill.line-failed {
+  background: var(--danger-bg);
+  color: var(--danger);
 }
 
 .payment-status {
@@ -540,8 +569,8 @@ button {
   display: grid;
   grid-template-columns: 1fr 0.8fr;
   gap: 8px;
-  margin-top: 12px;
-  margin-bottom: 10px;
+  margin-top: 9px;
+  margin-bottom: 9px;
 }
 
 .order-actions.one-action {
@@ -664,14 +693,14 @@ button {
 
 .item-panel {
   display: grid;
-  gap: 9px;
-  margin-top: 2px;
+  gap: 7px;
+  margin-top: 10px;
 }
 
 .item-section {
   border: 1px solid var(--line);
   border-radius: 14px;
-  padding: 10px;
+  padding: 9px;
   background: #fbfaf6;
 }
 
@@ -692,9 +721,9 @@ button {
   justify-content: space-between;
   gap: 10px;
   align-items: center;
-  padding: 6px 0;
+  padding: 5px 0;
   color: #32372f;
-  font-size: 1.08rem;
+  font-size: 1rem;
   font-weight: 900;
 }
 

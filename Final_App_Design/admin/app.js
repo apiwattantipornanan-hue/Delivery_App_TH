@@ -131,6 +131,22 @@ function getLineClass(order) {
   return order.lineUserId ? "line-linked" : "line-missing";
 }
 
+function getReadyLabel(order) {
+  if (order.lineReadyStatus === "sent") {
+    return "ส่ง LINE แล้ว";
+  }
+
+  if (order.lineReadyStatus === "needs_line_link") {
+    return "พร้อมแล้ว · ยังไม่ผูก LINE";
+  }
+
+  if (order.lineReadyStatus === "failed") {
+    return "พร้อมแล้ว · ส่ง LINE ไม่สำเร็จ";
+  }
+
+  return "อาหารพร้อมแล้ว";
+}
+
 function renderLineItems(items, emptyText) {
   if (!items.length) {
     return `<div class="line-empty">${emptyText}</div>`;
@@ -150,7 +166,7 @@ function renderLineItems(items, emptyText) {
 
 function getFulfillmentStatus(order) {
   if (order.orderStatus === "ready_for_pickup") {
-    return `<div class="prep-status ready"><span>รับสินค้า</span><strong>แจ้งลูกค้าแล้ว</strong></div>`;
+    return `<div class="prep-status ready"><span>รับสินค้า</span><strong>${getReadyLabel(order)}</strong></div>`;
   }
 
   if (order.orderStatus === "picked_up") {
@@ -168,7 +184,7 @@ function getOrderActions(order) {
   if (order.orderStatus === "picked_up" || order.orderStatus === "ready_for_pickup") {
     return `
       <div class="order-actions one-action">
-        <button class="complete-order" type="button" disabled>แจ้งลูกค้าแล้ว</button>
+        <button class="complete-order" type="button" disabled>${getReadyLabel(order)}</button>
       </div>
     `;
   }
@@ -203,9 +219,8 @@ function orderCard(order) {
           <span class="order-id">${order.id}</span>
           <strong class="customer-name">${order.customerName || "ไม่ระบุชื่อ"}</strong>
         </div>
+        <span class="line-pill ${getLineClass(order)}">${getLineLabel(order)}</span>
       </div>
-
-      ${getOrderActions(order)}
 
       <section class="item-panel">
         <div class="item-section">
@@ -217,6 +232,19 @@ function orderCard(order) {
           ${renderLineItems(addOns, "ไม่มีตัวเลือกเพิ่ม")}
         </div>
       </section>
+
+      <div class="order-meta">
+        <div>
+          <span>จำนวนกล่อง</span>
+          <strong>${order.capacityBoxes || 0}</strong>
+        </div>
+        <div>
+          <span>ยอดชำระ</span>
+          <strong>${baht(order.paymentAmount || order.total || 0)}</strong>
+        </div>
+      </div>
+
+      ${getOrderActions(order)}
 
       <div class="kitchen-summary ${mustardClass}">
         <span>รอบ ${order.pickupTime || "-"}</span>
@@ -231,17 +259,6 @@ function orderCard(order) {
       <div class="status-row">
         ${getPaymentBadge(order)}
         ${getFulfillmentStatus(order)}
-      </div>
-
-      <div class="order-meta">
-        <div>
-          <span>จำนวนกล่อง</span>
-          <strong>${order.capacityBoxes || 0}</strong>
-        </div>
-        <div>
-          <span>ยอดชำระ</span>
-          <strong>${baht(order.paymentAmount || order.total || 0)}</strong>
-        </div>
       </div>
 
       ${getVerificationLine(order)}
