@@ -122,7 +122,7 @@ function getLineLabel(order) {
     return "ส่ง LINE ไม่สำเร็จ";
   }
 
-  return order.lineUserId ? "ผูก LINE แล้ว" : "ยังไม่ผูก LINE";
+  return order.lineUserId ? "ผูก LINE แล้ว" : "รอลูกค้าส่งเลขใน LINE";
 }
 
 function getLineClass(order) {

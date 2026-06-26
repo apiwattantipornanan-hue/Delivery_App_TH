@@ -79,7 +79,7 @@ Customer flow:
 
 1. Customer taps `เพิ่มเพื่อน LINE`.
 2. Customer creates an order.
-3. Customer sends the order ID, for example `NB-20260626-001`, in the LINE chat.
+3. Customer taps `เปิด LINE ร้าน`; the app opens LINE with `เลขออเดอร์ NB-...` ready to send.
 4. `/api/line-webhook` links that LINE user to the Firestore order.
 5. Kitchen taps `อาหารพร้อมแล้ว`.
 6. `/api/line-ready` sends `อาหารพร้อมรับแล้วครับ จากร้านปอเปี๊ยะนายบุ้นหลี`.

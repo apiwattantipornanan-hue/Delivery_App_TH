@@ -47,8 +47,13 @@ document.querySelector("#shopName").textContent = config.shopName;
 document.querySelector("#shopSubtitle").textContent = config.shopSubtitle;
 document.querySelector("#mapsLink").href = config.googleMapsUrl;
 document.querySelector("#lineFriendLink").href = config.lineOfficialAccountUrl || "#";
-lineChatLink.href = config.lineOfficialAccountUrl || "#";
 customerPickupMap.href = config.googleMapsUrl;
+
+function getLineOrderMessageUrl(orderId) {
+  const accountId = config.lineOfficialAccountId || "@115utsxg";
+  const message = `เลขออเดอร์ ${orderId}`;
+  return `https://line.me/R/oaMessage/${encodeURIComponent(accountId)}/?${encodeURIComponent(message)}`;
+}
 
 function showScreen(screenId) {
   screens.forEach((screen) => {
@@ -516,6 +521,7 @@ async function showPaymentPanelForOrder(order) {
   paymentPanel.hidden = false;
   createdOrderId.textContent = order.id;
   lineOrderIdText.textContent = order.id;
+  lineChatLink.href = getLineOrderMessageUrl(order.id);
   lineOrderLinkCard.hidden = Boolean(order.lineUserId);
   rememberOrder(order.id);
   renderCustomerOrderStatus();
@@ -751,6 +757,7 @@ store.subscribeOrders((orders) => {
       paymentPanel.hidden = false;
       createdOrderId.textContent = trackedOrder.id;
       lineOrderIdText.textContent = trackedOrder.id;
+      lineChatLink.href = getLineOrderMessageUrl(trackedOrder.id);
       lineOrderLinkCard.hidden = Boolean(trackedOrder.lineUserId);
     }
   }
