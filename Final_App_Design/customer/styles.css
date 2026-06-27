@@ -694,13 +694,26 @@ button {
   font-size: 0.86rem;
 }
 
-.customer-form input {
+.customer-form .full-row {
+  grid-column: 1 / -1;
+}
+
+.customer-form input,
+.customer-form textarea {
   width: 100%;
   margin-top: 5px;
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 11px 12px;
   background: #fff;
+  color: var(--green-dark);
+  font: inherit;
+}
+
+.customer-form textarea {
+  min-height: 78px;
+  resize: vertical;
+  line-height: 1.45;
 }
 
 .payment-panel {

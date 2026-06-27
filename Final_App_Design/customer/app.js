@@ -39,6 +39,7 @@ const qrExpiryCard = document.querySelector("#qrExpiryCard");
 const qrExpiryCountdown = document.querySelector("#qrExpiryCountdown");
 const confirmTransferButton = document.querySelector("#confirmTransferButton");
 const orderStatusMessage = document.querySelector("#orderStatusMessage");
+const customerNote = document.querySelector("#customerNote");
 let expiryTimerId = null;
 let expirySyncing = false;
 const CREATE_QR_BUTTON_TEXT = createOrderButton.textContent;
@@ -74,6 +75,17 @@ function generateSlots() {
   }
 
   return slots;
+}
+
+function getSlotMinutes(slot) {
+  const [hour, minute] = slot.split(":").map(Number);
+  return hour * 60 + minute;
+}
+
+function isPastPickupSlot(slot) {
+  const now = new Date();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  return getSlotMinutes(slot) < currentMinutes;
 }
 
 function getCartLines() {
@@ -131,8 +143,14 @@ function getSlotUsedBoxes(slot) {
 }
 
 function getSlotStatus(slot) {
-  if (state.settings?.stockOpen === false || state.settings?.closedSlots?.includes(slot)) {
+  const closedSlots = [...(config.customerDisabledSlots || []), ...(state.settings?.closedSlots || [])];
+
+  if (state.settings?.stockOpen === false || closedSlots.includes(slot)) {
     return { label: "ของหมดชั่วคราว", status: "closed", disabled: true };
+  }
+
+  if (isPastPickupSlot(slot)) {
+    return { label: "เลยเวลาแล้ว", status: "closed", disabled: true };
   }
 
   const usedBoxes = getSlotUsedBoxes(slot);
@@ -578,6 +596,7 @@ async function createPickupOrder() {
 
   const customerName = document.querySelector("#customerName").value.trim();
   const customerPhone = document.querySelector("#customerPhone").value.trim();
+  const customerRequest = customerNote?.value.trim() || "";
 
   if (getCartLines().length <= 0) {
     alert("กรุณาเลือกสินค้าอย่างน้อย 1 รายการ");
@@ -630,6 +649,7 @@ async function createPickupOrder() {
     pickupTime: state.selectedSlot,
     customerName,
     customerPhone,
+    customerNote: customerRequest,
     items: [...getCartLines(), ...getAddOnLines()].map((line) => ({
       id: line.id,
       name: line.name,
@@ -771,5 +791,10 @@ store.subscribeSettings((settings) => {
   state.settings = settings;
   render();
 });
+
+window.setInterval(() => {
+  renderSlots();
+  renderTotals();
+}, 60000);
 
 render();

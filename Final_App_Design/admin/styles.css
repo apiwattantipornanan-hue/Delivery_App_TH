@@ -523,6 +523,30 @@ button {
   color: var(--ink);
 }
 
+.customer-note {
+  display: grid;
+  gap: 4px;
+  margin-top: 9px;
+  border: 1px solid #ead49c;
+  border-radius: 13px;
+  padding: 10px;
+  background: #fff8ea;
+  color: var(--manual);
+}
+
+.customer-note span {
+  font-size: 0.74rem;
+  font-weight: 900;
+  opacity: 0.72;
+}
+
+.customer-note strong {
+  color: var(--ink);
+  font-size: 0.94rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .order-meta {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

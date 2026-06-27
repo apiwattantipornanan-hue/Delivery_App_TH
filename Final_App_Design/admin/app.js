@@ -2,6 +2,15 @@ const config = window.APP_CONFIG;
 const store = window.FinalAppStore;
 const baht = (value) => `฿${Number(value).toLocaleString("th-TH", { minimumFractionDigits: value % 1 ? 2 : 0 })}`;
 
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 let orders = [];
 let settings = null;
 
@@ -232,6 +241,12 @@ function orderCard(order) {
           ${renderLineItems(addOns, "ไม่มีตัวเลือกเพิ่ม")}
         </div>
       </section>
+
+      ${
+        order.customerNote
+          ? `<div class="customer-note"><span>หมายเหตุลูกค้า</span><strong>${escapeHtml(order.customerNote)}</strong></div>`
+          : ""
+      }
 
       <div class="order-meta">
         <div>
