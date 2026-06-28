@@ -509,7 +509,7 @@ function renderCustomerOrderStatus() {
   orderStatusMessage.hidden = paymentFinished;
 
   if (transferReported && !paymentFinished) {
-    orderStatusMessage.textContent = "แจ้งร้านแล้ว ร้านจะตรวจยอดโอนในแอปธนาคารและยืนยันออเดอร์ให้ค่ะ";
+    orderStatusMessage.textContent = "แจ้งร้านแล้วค่ะ อย่าลืมกดปุ่ม “กดเพื่อส่งเลขออเดอร์” นะคะ เพื่อให้ร้านแจ้งกลับทาง LINE เมื่ออาหารพร้อมค่ะ";
   }
 }
 
@@ -585,7 +585,7 @@ async function confirmTransferToShop() {
 
   state.createdOrder = { ...latestOrder, ...patch };
   stopExpiryTimer();
-  orderStatusMessage.textContent = "แจ้งร้านแล้ว ร้านจะตรวจยอดโอนในแอปธนาคารและยืนยันออเดอร์ให้ค่ะ";
+  orderStatusMessage.textContent = "แจ้งร้านแล้วค่ะ อย่าลืมกดปุ่ม “กดเพื่อส่งเลขออเดอร์” นะคะ เพื่อให้ร้านแจ้งกลับทาง LINE เมื่ออาหารพร้อมค่ะ";
   renderCustomerOrderStatus();
   renderQrExpiry();
 }
