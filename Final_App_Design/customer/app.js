@@ -759,7 +759,7 @@ copyOrderIdButton.addEventListener("click", async () => {
     await navigator.clipboard.writeText(order.id);
     copyOrderIdButton.textContent = "คัดลอกแล้ว";
     window.setTimeout(() => {
-      copyOrderIdButton.textContent = "คัดลอกเลขออเดอร์";
+      copyOrderIdButton.textContent = "คัดลอกสำรอง";
     }, 1600);
   } catch {
     alert(`เลขออเดอร์ของคุณคือ ${order.id}`);

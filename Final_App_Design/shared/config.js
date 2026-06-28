@@ -14,7 +14,7 @@ window.APP_CONFIG = {
   pickupStart: "09:30",
   pickupEnd: "15:00",
   pickupIntervalMinutes: 30,
-  customerDisabledSlots: ["12:00"],
+  customerDisabledSlots: ["12:30", "13:00", "13:30", "14:00", "14:30", "15:00"],
   dailyPageRefresh: {
     enabled: true,
     time: "08:55",

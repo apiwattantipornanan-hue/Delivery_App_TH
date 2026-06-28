@@ -233,16 +233,33 @@ button {
 }
 
 .line-friend-card {
+  position: relative;
+  overflow: hidden;
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 12px;
+  gap: 14px;
   align-items: center;
   margin-top: 14px;
-  border: 1px solid rgba(6, 185, 84, 0.26);
-  border-radius: 19px;
-  padding: 14px;
-  background: linear-gradient(135deg, #ecfbf1, #fffdf7);
-  box-shadow: 0 12px 24px rgba(6, 185, 84, 0.1);
+  border: 2px solid rgba(6, 199, 85, 0.3);
+  border-radius: 22px;
+  padding: 16px;
+  background:
+    radial-gradient(circle at 86% 18%, rgba(6, 199, 85, 0.16), transparent 30%),
+    linear-gradient(135deg, #ecfbf1, #fffdf7 72%);
+  box-shadow: 0 16px 30px rgba(6, 185, 84, 0.14);
+}
+
+.line-friend-card::before {
+  content: "ทำก่อนสั่ง";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: #fff8d8;
+  color: var(--brown);
+  font-size: 0.68rem;
+  font-weight: 900;
 }
 
 .line-copy span {
@@ -256,24 +273,56 @@ button {
   display: block;
   margin-top: 3px;
   color: var(--green-dark);
-  font-size: 1rem;
+  font-size: 1.08rem;
   line-height: 1.25;
 }
 
 .line-copy p {
-  margin: 5px 0 0;
+  margin: 7px 0 0;
   color: #5d665c;
   font-size: 0.82rem;
   line-height: 1.45;
+}
+
+.line-steps {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.line-steps li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 6px 9px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--green-dark);
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.line-steps b {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #06c755;
+  color: #fff;
+  font-size: 0.7rem;
 }
 
 .line-friend-card a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 112px;
+  min-width: 134px;
   border-radius: 999px;
-  padding: 11px 13px;
+  padding: 13px 15px;
   background: #06c755;
   color: #fff;
   font-size: 0.86rem;
@@ -748,12 +797,13 @@ button {
 
 .line-order-link-card {
   display: grid;
-  gap: 7px;
+  gap: 8px;
   margin-bottom: 13px;
-  border: 1px solid rgba(6, 185, 84, 0.24);
-  border-radius: 18px;
-  padding: 14px;
-  background: #effaf0;
+  border: 2px solid rgba(6, 185, 84, 0.28);
+  border-radius: 20px;
+  padding: 15px;
+  background: linear-gradient(135deg, #e9fbef, #fffdf7);
+  box-shadow: 0 14px 26px rgba(6, 185, 84, 0.11);
 }
 
 .line-order-link-card > span {
@@ -775,14 +825,19 @@ button {
 }
 
 .line-order-link-card b {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 2px 7px;
+  background: #fff8d8;
   color: var(--brown);
+  font-weight: 900;
 }
 
 .line-link-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 0.78fr 1.22fr;
   gap: 8px;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .line-link-actions button,
@@ -806,6 +861,7 @@ button {
 .line-link-actions a {
   background: #06c755;
   color: #fff;
+  box-shadow: 0 10px 18px rgba(6, 199, 85, 0.18);
 }
 
 .customer-status-card span {
